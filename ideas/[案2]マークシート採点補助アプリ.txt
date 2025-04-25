@@ -1,0 +1,12 @@
+（仮）アプリ名：　Mark Check And Share
+
+アプリ概要：マークシートの解答を記録し、採点をサポート。結果を出力し、同一試験の採点を自動化
+
+機能：
+・マークシートの選択の記録
+・手動採点
+・正答をインポート＆エクスポート
+・自動採点
+
+その他：
+PDFリンク:https://kcsk-my.sharepoint.com/:b:/g/personal/241138_kcsk_onmicrosoft_com/EZZLLZlJn75AsopzOezS92IBvt8fasgt5aMIiZ6L47nW9w?e=EgABh8
