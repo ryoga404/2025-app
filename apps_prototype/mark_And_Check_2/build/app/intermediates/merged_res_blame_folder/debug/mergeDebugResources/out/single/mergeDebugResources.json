@@ -1,0 +1,26 @@
+[
+    {
+        "merged": "Asahiro.kcs.R1A1.mark_and_check.app-debug-26:/mipmap-hdpi_ic_launcher.png.flat",
+        "source": "Asahiro.kcs.R1A1.mark_and_check.app-main-21:/mipmap-hdpi/ic_launcher.png"
+    },
+    {
+        "merged": "Asahiro.kcs.R1A1.mark_and_check.app-debug-26:/mipmap-xhdpi_ic_launcher.png.flat",
+        "source": "Asahiro.kcs.R1A1.mark_and_check.app-main-21:/mipmap-xhdpi/ic_launcher.png"
+    },
+    {
+        "merged": "Asahiro.kcs.R1A1.mark_and_check.app-debug-26:/mipmap-xxhdpi_ic_launcher.png.flat",
+        "source": "Asahiro.kcs.R1A1.mark_and_check.app-main-21:/mipmap-xxhdpi/ic_launcher.png"
+    },
+    {
+        "merged": "Asahiro.kcs.R1A1.mark_and_check.app-debug-26:/drawable-v21_launch_background.xml.flat",
+        "source": "Asahiro.kcs.R1A1.mark_and_check.app-main-21:/drawable-v21/launch_background.xml"
+    },
+    {
+        "merged": "Asahiro.kcs.R1A1.mark_and_check.app-debug-26:/mipmap-xxxhdpi_ic_launcher.png.flat",
+        "source": "Asahiro.kcs.R1A1.mark_and_check.app-main-21:/mipmap-xxxhdpi/ic_launcher.png"
+    },
+    {
+        "merged": "Asahiro.kcs.R1A1.mark_and_check.app-debug-26:/mipmap-mdpi_ic_launcher.png.flat",
+        "source": "Asahiro.kcs.R1A1.mark_and_check.app-main-21:/mipmap-mdpi/ic_launcher.png"
+    }
+]
