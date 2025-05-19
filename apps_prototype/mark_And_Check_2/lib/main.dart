@@ -1,10 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mark_and_check/go_router/router.dart';
+import 'package:mark_and_check/mark/data/app_database.dart';
+import 'package:mark_and_check/mark/data/dao/sheet_dao.dart';
 
 void main() {
   runApp(
     ProviderScope(
+      overrides: [
+        /*sheetDaoDataSource.overrideWith(((ref)=>「データソース」)))*/
+        //データソースを変更する際に有効化
+      ],
       child: MyApp(), //Riverpodでラップ　Wrapped by Riverpod.
     ),
   );
@@ -43,8 +49,6 @@ class MyApp extends StatelessWidget {
         ),
       ),
       themeMode: ThemeMode.system,
-
-
     );
   }
 }
