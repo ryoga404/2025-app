@@ -11,7 +11,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 # build by specifying --build-name and --build-number, respectively.
 # In Android, build-name is used as versionName while build-number used as versionCode.
 # Read more about Android versioning at https://developer.android.com/studio/publish/versioning
-# In iOS, build-name is used as CFBundleShortVersionString while build-number is used as CFBundleVersion.
+# I n iOS, build-name is used as CFBundleShortVersionString while build-number is used as CFBundleVersion.
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
 # In Windows, build-name is used as the major, minor, and patch parts
@@ -34,9 +34,16 @@ dependencies:
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.8
-  flutter_riverpod: ^2.6.1
+  hooks_riverpod: ^2.6.1
+  flutter_hooks: ^0.21.2
   riverpod_annotation: ^2.6.1
-  go_router: ^15.1.1
+  go_router: ^15.1.2
+  freezed_annotation: ^3.0.0
+  json_annotation: ^4.9.0
+  sqflite: ^2.4.2
+  path: ^1.9.1
+  path_provider: ^2.1.5
+
 
 dev_dependencies:
   flutter_test:
@@ -47,11 +54,15 @@ dev_dependencies:
   # activated in the `analysis_options.yaml` file located at the root of your
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
+
+  custom_lint: ^0.7.5
   flutter_lints: ^5.0.0
   riverpod_generator: ^2.6.5
   build_runner: ^2.4.15
-  custom_lint: ^0.7.5
   riverpod_lint: ^2.6.5
+  freezed: ^3.0.6
+  json_serializable: ^6.9.5
+
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
