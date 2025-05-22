@@ -29,7 +29,8 @@ class MyHomePage extends StatelessWidget {
       body: Center(
         child: ElevatedButton(
           child: Text('次の画面へ'),
-          onPressed: () {
+          onPr
+essed: () {
             Navigator.push(
               context, MaterialPageRoute(builder: (context) => NextPage()));
           },
