@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:mark_and_check/go_router/app_router.dart';
 import 'package:mark_and_check/go_router/my_router_config.dart';
 import 'theme/app_theme.dart';
 
@@ -10,8 +9,6 @@ class MarkAndCheckApp extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // ルーターの設定を取得
-    final router = AppRouter;
 
     return MaterialApp.router(
       // ルーターの設定を取得

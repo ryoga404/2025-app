@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'app/app.dart';
-import 'package:mark_and_check/go_router/router.dart';
 
 // アプリケーションのエントリーポイント
 void main() {

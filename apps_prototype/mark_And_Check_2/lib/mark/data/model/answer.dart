@@ -1,6 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 
-import 'answer.dart';
 part 'answer.freezed.dart';
 @freezed
 abstract class Answer with _$Answer {
