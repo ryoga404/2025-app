@@ -1,10 +1,12 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
+
+import 'answer.dart';
 part 'answer.freezed.dart';
 @freezed
-class answer with _$answer {
-  const factory answer(
+abstract class Answer with _$Answer {
+  const factory Answer(
       int id,
       int index,
       int answer
-      ) = _answer;
+      ) = _Answer;
 }

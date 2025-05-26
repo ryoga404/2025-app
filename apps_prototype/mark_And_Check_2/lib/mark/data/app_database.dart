@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:mark_and_check/mark/data/model/answer.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path_provider/path_provider.dart';
 
@@ -7,7 +8,7 @@ final appDatabaseManagerProvider = Provider((ref) {
   return AppDatabaseManager();
 }); //データベースのインスタンスを作成し、以降はインスタンスを返す
 
-class AppDatabaseManager{
+class AppDatabaseManager {
   late Database db;
 
   AppDatabaseManager() {
@@ -35,20 +36,6 @@ class AppDatabaseManager{
       dbFilePath,
       version: 1,
 
-      onCreate: (Database db, int version) async {
-        //データベースがない時に実行
-        await db.execute(
-          'CREATE TABLE sheets'
-          '(id INTEGER PRIMARY KEY AUTOINCREMENT, counts INTEGER)',
-        ); //sheetsテーブル作成
-        await db.execute('''CREATE TABLE answers(
-              id INTEGER PRIMARY KEY,
-              index INTEGER,
-              answer INTEGER,
-              
-              FOREIGN KEY(id) REFERENCES sheets(id))'''); //answersテーブル作成
-      },
-
       onUpgrade: (Database db, int oldVersion, int newVersion) async {
         //スキーマバージョンが違う時実行
         const upgradeScripts = {
@@ -61,6 +48,21 @@ class AppDatabaseManager{
             await db.execute(query); //バージョンが同じになるまで、queriesを繰り返す。
           }
         }
+      },
+
+      onCreate: (Database db, int version) async {
+        //データベースがない時に実行
+
+        await db.execute(
+          'CREATE TABLE sheets'
+          '(id INTEGER PRIMARY KEY AUTOINCREMENT, name STRING',
+        ); //sheetsテーブル作成
+        await db.execute('''CREATE TABLE answers(
+              id INTEGER PRIMARY KEY,
+              index INTEGER,
+              answer INTEGER,
+              
+              FOREIGN KEY(id) REFERENCES sheets(id))'''); //answersテーブル作成
       },
     );
   }

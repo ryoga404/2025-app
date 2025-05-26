@@ -4,17 +4,20 @@ import 'package:sqflite/sqflite.dart';
 
 import '../model/sheet.dart';
 
-final sheetDaoDataSource = Provider((ref) => appDatabaseManagerProvider);
+final sheetDaoDataSource = appDatabaseManagerProvider;
 
 class SheetDao {
   late Database db;
 
   SheetDao(Ref ref) {
-    db = ref.read(appDatabaseManagerProvider).db;
+    db = ref.read(sheetDaoDataSource).db;
   }
 
-
   Future<void> insert(Sheet sheet) async {
-    db.insert(sheet.name, sheet.toJson);
-    }
+    db.insert("sheets", {"name": sheet.name});
+  }
+
+  Future<List<Map<String, dynamic>>> getAll(Sheet sheet) async {
+    return db.query("sheets");
+  }
 }

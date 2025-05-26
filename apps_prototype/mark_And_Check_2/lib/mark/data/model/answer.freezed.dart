@@ -13,20 +13,20 @@ part of 'answer.dart';
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
-mixin _$answer {
+mixin _$Answer {
 
  int get id; int get index; int get answer;
-/// Create a copy of answer
+/// Create a copy of Answer
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
 @pragma('vm:prefer-inline')
-$answerCopyWith<answer> get copyWith => _$answerCopyWithImpl<answer>(this as answer, _$identity);
+$AnswerCopyWith<Answer> get copyWith => _$AnswerCopyWithImpl<Answer>(this as Answer, _$identity);
 
 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is answer&&(identical(other.id, id) || other.id == id)&&(identical(other.index, index) || other.index == index)&&(identical(other.answer, answer) || other.answer == answer));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is Answer&&(identical(other.id, id) || other.id == id)&&(identical(other.index, index) || other.index == index)&&(identical(other.answer, answer) || other.answer == answer));
 }
 
 
@@ -35,15 +35,15 @@ int get hashCode => Object.hash(runtimeType,id,index,answer);
 
 @override
 String toString() {
-  return 'answer(id: $id, index: $index, answer: $answer)';
+  return 'Answer(id: $id, index: $index, answer: $answer)';
 }
 
 
 }
 
 /// @nodoc
-abstract mixin class $answerCopyWith<$Res>  {
-  factory $answerCopyWith(answer value, $Res Function(answer) _then) = _$answerCopyWithImpl;
+abstract mixin class $AnswerCopyWith<$Res>  {
+  factory $AnswerCopyWith(Answer value, $Res Function(Answer) _then) = _$AnswerCopyWithImpl;
 @useResult
 $Res call({
  int id, int index, int answer
@@ -54,14 +54,14 @@ $Res call({
 
 }
 /// @nodoc
-class _$answerCopyWithImpl<$Res>
-    implements $answerCopyWith<$Res> {
-  _$answerCopyWithImpl(this._self, this._then);
+class _$AnswerCopyWithImpl<$Res>
+    implements $AnswerCopyWith<$Res> {
+  _$AnswerCopyWithImpl(this._self, this._then);
 
-  final answer _self;
-  final $Res Function(answer) _then;
+  final Answer _self;
+  final $Res Function(Answer) _then;
 
-/// Create a copy of answer
+/// Create a copy of Answer
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? index = null,Object? answer = null,}) {
   return _then(_self.copyWith(
@@ -78,25 +78,25 @@ as int,
 /// @nodoc
 
 
-class _answer implements answer {
-  const _answer(this.id, this.index, this.answer);
+class _Answer implements Answer {
+  const _Answer(this.id, this.index, this.answer);
   
 
 @override final  int id;
 @override final  int index;
 @override final  int answer;
 
-/// Create a copy of answer
+/// Create a copy of Answer
 /// with the given fields replaced by the non-null parameter values.
 @override @JsonKey(includeFromJson: false, includeToJson: false)
 @pragma('vm:prefer-inline')
-_$answerCopyWith<_answer> get copyWith => __$answerCopyWithImpl<_answer>(this, _$identity);
+_$AnswerCopyWith<_Answer> get copyWith => __$AnswerCopyWithImpl<_Answer>(this, _$identity);
 
 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _answer&&(identical(other.id, id) || other.id == id)&&(identical(other.index, index) || other.index == index)&&(identical(other.answer, answer) || other.answer == answer));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Answer&&(identical(other.id, id) || other.id == id)&&(identical(other.index, index) || other.index == index)&&(identical(other.answer, answer) || other.answer == answer));
 }
 
 
@@ -105,15 +105,15 @@ int get hashCode => Object.hash(runtimeType,id,index,answer);
 
 @override
 String toString() {
-  return 'answer(id: $id, index: $index, answer: $answer)';
+  return 'Answer(id: $id, index: $index, answer: $answer)';
 }
 
 
 }
 
 /// @nodoc
-abstract mixin class _$answerCopyWith<$Res> implements $answerCopyWith<$Res> {
-  factory _$answerCopyWith(_answer value, $Res Function(_answer) _then) = __$answerCopyWithImpl;
+abstract mixin class _$AnswerCopyWith<$Res> implements $AnswerCopyWith<$Res> {
+  factory _$AnswerCopyWith(_Answer value, $Res Function(_Answer) _then) = __$AnswerCopyWithImpl;
 @override @useResult
 $Res call({
  int id, int index, int answer
@@ -124,17 +124,17 @@ $Res call({
 
 }
 /// @nodoc
-class __$answerCopyWithImpl<$Res>
-    implements _$answerCopyWith<$Res> {
-  __$answerCopyWithImpl(this._self, this._then);
+class __$AnswerCopyWithImpl<$Res>
+    implements _$AnswerCopyWith<$Res> {
+  __$AnswerCopyWithImpl(this._self, this._then);
 
-  final _answer _self;
-  final $Res Function(_answer) _then;
+  final _Answer _self;
+  final $Res Function(_Answer) _then;
 
-/// Create a copy of answer
+/// Create a copy of Answer
 /// with the given fields replaced by the non-null parameter values.
 @override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? index = null,Object? answer = null,}) {
-  return _then(_answer(
+  return _then(_Answer(
 null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as int,null == index ? _self.index : index // ignore: cast_nullable_to_non_nullable
 as int,null == answer ? _self.answer : answer // ignore: cast_nullable_to_non_nullable
