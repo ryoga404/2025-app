@@ -3,15 +3,15 @@
   "packages": [
     {
       "name": "_fe_analyzer_shared",
-      "rootUri": "file:///C:/Users/assan/AppData/Local/Pub/Cache/hosted/pub.dev/_fe_analyzer_shared-80.0.0",
+      "rootUri": "file:///C:/Users/assan/AppData/Local/Pub/Cache/hosted/pub.dev/_fe_analyzer_shared-82.0.0",
       "packageUri": "lib/",
-      "languageVersion": "3.3"
+      "languageVersion": "3.5"
     },
     {
       "name": "analyzer",
-      "rootUri": "file:///C:/Users/assan/AppData/Local/Pub/Cache/hosted/pub.dev/analyzer-7.3.0",
+      "rootUri": "file:///C:/Users/assan/AppData/Local/Pub/Cache/hosted/pub.dev/analyzer-7.4.5",
       "packageUri": "lib/",
-      "languageVersion": "3.3"
+      "languageVersion": "3.5"
     },
     {
       "name": "analyzer_plugin",
@@ -165,15 +165,15 @@
     },
     {
       "name": "custom_lint_visitor",
-      "rootUri": "file:///C:/Users/assan/AppData/Local/Pub/Cache/hosted/pub.dev/custom_lint_visitor-1.0.0+7.3.0",
+      "rootUri": "file:///C:/Users/assan/AppData/Local/Pub/Cache/hosted/pub.dev/custom_lint_visitor-1.0.0+7.4.5",
       "packageUri": "lib/",
       "languageVersion": "3.0"
     },
     {
       "name": "dart_style",
-      "rootUri": "file:///C:/Users/assan/AppData/Local/Pub/Cache/hosted/pub.dev/dart_style-3.0.1",
+      "rootUri": "file:///C:/Users/assan/AppData/Local/Pub/Cache/hosted/pub.dev/dart_style-3.1.0",
       "packageUri": "lib/",
-      "languageVersion": "3.4"
+      "languageVersion": "3.7"
     },
     {
       "name": "fake_async",
