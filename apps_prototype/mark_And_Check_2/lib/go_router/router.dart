@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mark_and_check/go_router/route_path_name.dart';
 import 'package:mark_and_check/home.dart';
-import 'package:mark_and_check/mark/view/mark_mode_select_view.dart';
-import 'package:mark_and_check/mark/view/mark_sheet_create_view.dart';
+import 'package:mark_and_check/features/mark/view/mark_mode_select_view.dart';
+import 'package:mark_and_check/features/mark/view/mark_sheet_create_view.dart';
 
 final goRouter = GoRouter(
   // when starting the application
@@ -32,6 +32,13 @@ final goRouter = GoRouter(
         return MaterialPage(key: state.pageKey, child: const MarkSheetCreateView());
       },
     ),
+   GoRoute(
+       path: RoutePathName.selectMarkSheet,
+       name: "select_mark_sheet",
+       pageBuilder: (context, state) {
+         return MaterialPage(key: state.pageKey, child: const MarkSheetCreateView());
+       },
+   )
   ],
 
   errorPageBuilder:

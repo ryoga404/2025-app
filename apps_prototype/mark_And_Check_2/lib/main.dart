@@ -4,8 +4,6 @@ import 'app/app.dart';
 
 // アプリケーションのエントリーポイント
 void main() {
-  // Flutterのバインディングを初期化
-  WidgetsFlutterBinding.ensureInitialized();
   
   // アプリケーションを起動
   runApp(

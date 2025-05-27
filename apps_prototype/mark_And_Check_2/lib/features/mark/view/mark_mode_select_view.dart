@@ -20,7 +20,7 @@ class MarkModeSelectView extends StatelessWidget {
                 child: FilledButton(
                   onPressed: () => AppRouter.toCreateMarkSheet(context),
                   child:
-                  const Text('Create Mark Sheet',),
+                  const Text('Select Mark Sheet!'),
                 ),
               ),
               SizedBox(//TODO　個別のSizedBox
