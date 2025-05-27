@@ -90,40 +90,64 @@ class LocalRepository {
 }
 
 ' ビュー
+package mark{
 class SheetSelectView {
   -repository: LocalRepository
   +onSheetSelected(sheet: Sheet): void
   +onCreateNew(): void
 }
 
-class MarkSheetView {
+class InputView {
   -repository: LocalRepository
   -currentSheet: Sheet
   +onAnswerSubmitted(answers: List<Answer>): void
   +onFinishMarking(): void
 }
-
-class CheckSheetView {
+class CreateSheetView{
   -repository: LocalRepository
-  -currentSheet: Sheet
-  +onScoreCalculated(result: MarkResult): void
+  -createSheet()
+}
+class FinishMarkView{
+}
+
+'位置調整
+SheetSelectView -[hidden]- CreateSheetView
+CreateSheetView -[hidden]- InputView
+InputView -[hidden]- FinishMarkView
+}
+
+package Check{
+    class SheetList {
+        -repository: LocalRepository
+    }
+    class SelectAnswerFile{
+        -repository: LocalRepository
+
+    }
+    class SelfInput{
+    }
+    class showScore
+'位置調整
+ SheetList -[hidden]- SelectAnswerFile
 }
 
 ' リレーションシップ
-Sheet "1" -- "*" Answer
-Sheet "1" -- "*" MarkResult
-Sheet "1" -- "*" SharedSheet
+Sheet "1" - "*" Answer
+Sheet "1" - "*" MarkResult
+Sheet "1" - "*" SharedSheet
 
-ISheetRepository <|.. LocalRepository
-IAnswerRepository <|.. LocalRepository
-ISharedSheetRepository <|.. LocalRepository
+ISheetRepository <|.r. LocalRepository
+IAnswerRepository <|.r. LocalRepository
+ISharedSheetRepository <|.r. LocalRepository
 
-LocalRepository --> SheetDao
-LocalRepository --> AnswerDao
-LocalRepository --> SharedSheetDao
+LocalRepository -d-> SheetDao
+LocalRepository -d-> AnswerDao
+LocalRepository -d-> SharedSheetDao
 
-SheetSelectView --> LocalRepository
-MarkSheetView --> LocalRepository
-CheckSheetView --> LocalRepository
+SheetSelectView -d-> LocalRepository
+CreateSheetView -d-> LocalRepository
+InputView -d-> LocalRepository
+FinishMarkView -d-> LocalRepository
+SheetList -d-> LocalRepository
 
 @enduml
