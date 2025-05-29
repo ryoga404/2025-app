@@ -1,0 +1,1 @@
+ /home/ryoga404/AndroidStudioProjects/calender/.dart_tool/flutter_build/822110ab28dea4aed29e2b7a32469989/native_assets.json: 
