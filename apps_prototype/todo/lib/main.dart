@@ -142,7 +142,7 @@ class _TodoAddPageState extends State<TodoAddPage> {
                 onPressed: () {
                   Navigator.of(context).pop(_text);
                 },
-                child: Text('リスト追加', style: TextStyle(color: Colors.white)),
+                child: Text('リスト追加', style: TextStyle(color: Colors.blue)),
               ),
             ),
             const SizedBox(height: 8),
