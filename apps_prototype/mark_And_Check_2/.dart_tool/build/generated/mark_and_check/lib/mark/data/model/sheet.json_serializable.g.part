@@ -1,0 +1,11 @@
+// **************************************************************************
+// JsonSerializableGenerator
+// **************************************************************************
+
+_Sheet _$SheetFromJson(Map<String, dynamic> json) =>
+    _Sheet(json['name'] as String, (json['id'] as num).toInt());
+
+Map<String, dynamic> _$SheetToJson(_Sheet instance) => <String, dynamic>{
+  'name': instance.name,
+  'id': instance.id,
+};

@@ -1,0 +1,15 @@
+@startuml
+'https://plantuml.com/class-diagram
+
+entity Sheet{
+ id *PK : INTEGER
+ name : STRING
+}
+
+entity answer{
+ id *PK,FK* : INTEGER
+ index *PK* : INTEGER
+ answer : INTEGER
+}
+
+@enduml
