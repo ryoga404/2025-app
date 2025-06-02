@@ -31,3 +31,17 @@
 　・iOS
 　・Android
 　・WebGUI
+
+
+
+［プロトタイプ１］DB内に家計簿データ保存・表示・削除
+
+datas TABLE
+id int auto_increment primary key
+date DATE not null
+type VARCHAR(10) not null check(type in ('収入','支出'))
+ammount int not null check(ammount >= 0)
+
+・抽出
+typeでGROUP BYで合計→Dartに返す
+日付の範囲などで
