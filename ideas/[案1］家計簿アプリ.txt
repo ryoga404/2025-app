@@ -40,8 +40,11 @@ datas TABLE
 id int auto_increment primary key
 date DATE not null
 type VARCHAR(10) not null check(type in ('収入','支出'))
+subtype VARCHAR(20)
 ammount int not null check(ammount >= 0)
 
 ・抽出
 typeでGROUP BYで合計→Dartに返す
-日付の範囲などで
+日付の範囲などで合計など出力
+支出のうち〇〇に最も金額をかけている
+
