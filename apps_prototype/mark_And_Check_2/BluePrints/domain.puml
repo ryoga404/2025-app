@@ -1,153 +1,27 @@
 @startuml
 'https://plantuml.com/class-diagram
 
-' エンティティ
-class Sheet {
-  +id: Integer
-  +name: String
-  +createdAt: DateTime
-  +updatedAt: DateTime
+abstract class AbstractList
+abstract AbstractCollection
+interface List
+interface Collection
+
+List <|-- AbstractList
+Collection <|-- AbstractCollection
+
+Collection <|- List
+AbstractCollection <|- AbstractList
+AbstractList <|-- ArrayList
+
+class ArrayList {
+Object[] elementData
+size()
 }
 
-class Answer {
-  +id: Integer
-  +sheetId: Integer
-  +index: Integer
-  +answer: Integer
-  +markedAt: DateTime
+enum TimeUnit {
+DAYS
+HOURS
+MINUTES
 }
-
-class MarkResult {
-  +id: Integer
-  +sheetId: Integer
-  +score: Integer
-  +totalQuestions: Integer
-  +markedAt: DateTime
-}
-
-class SharedSheet {
-  +id: Integer
-  +originalSheetId: Integer
-  +sharedBy: String
-  +sharedAt: DateTime
-  +accessCode: String
-}
-
-' リポジトリ
-interface ISheetRepository {
-  +getAll(): Future<List<Sheet>>
-  +getById(id: Integer): Future<Sheet>
-  +create(sheet: Sheet): Future<void>
-  +update(sheet: Sheet): Future<void>
-  +delete(id: Integer): Future<void>
-}
-
-interface IAnswerRepository {
-  +getBySheetId(sheetId: Integer): Future<List<Answer>>
-  +saveAnswers(answers: List<Answer>): Future<void>
-  +getMarkResult(sheetId: Integer): Future<MarkResult>
-}
-
-interface ISharedSheetRepository {
-  +share(sheet: Sheet): Future<SharedSheet>
-  +getByAccessCode(code: String): Future<SharedSheet>
-  +importSharedSheet(sharedSheet: SharedSheet): Future<Sheet>
-}
-
-' データアクセス
-class SheetDao {
-  +insert(sheet: Sheet): Future<void>
-  +getAll(): Future<List<Sheet>>
-  +getById(id: Integer): Future<Sheet>
-  +update(sheet: Sheet): Future<void>
-  +delete(id: Integer): Future<void>
-}
-
-class AnswerDao {
-  +insert(answer: Answer): Future<void>
-  +getBySheetId(sheetId: Integer): Future<List<Answer>>
-  +update(answer: Answer): Future<void>
-  +delete(id: Integer): Future<void>
-}
-
-class SharedSheetDao {
-  +insert(sharedSheet: SharedSheet): Future<void>
-  +getByAccessCode(code: String): Future<SharedSheet>
-  +delete(id: Integer): Future<void>
-}
-
-' リポジトリ実装
-class LocalRepository {
-  -sheetDao: SheetDao
-  -answerDao: AnswerDao
-  -sharedSheetDao: SharedSheetDao
-  +sheetsProvider: FutureProvider<List<Sheet>>
-  +getAll(): Future<List<Sheet>>
-  +createSheet(sheet: Sheet): Future<void>
-  +saveAnswers(answers: List<Answer>): Future<void>
-  +shareSheet(sheet: Sheet): Future<SharedSheet>
-  +importSharedSheet(code: String): Future<Sheet>
-}
-
-' ビュー
-package mark{
-class SheetSelectView {
-  -repository: LocalRepository
-  +onSheetSelected(sheet: Sheet): void
-  +onCreateNew(): void
-}
-
-class InputView {
-  -repository: LocalRepository
-  -currentSheet: Sheet
-  +onAnswerSubmitted(answers: List<Answer>): void
-  +onFinishMarking(): void
-}
-class CreateSheetView{
-  -repository: LocalRepository
-  -createSheet()
-}
-class FinishMarkView{
-}
-
-'位置調整
-SheetSelectView -[hidden]- CreateSheetView
-CreateSheetView -[hidden]- InputView
-InputView -[hidden]- FinishMarkView
-}
-
-package Check{
-    class SheetList {
-        -repository: LocalRepository
-    }
-    class SelectAnswerFile{
-        -repository: LocalRepository
-
-    }
-    class SelfInput{
-    }
-    class showScore
-'位置調整
- SheetList -[hidden]- SelectAnswerFile
-}
-
-' リレーションシップ
-Sheet "1" - "*" Answer
-Sheet "1" - "*" MarkResult
-Sheet "1" - "*" SharedSheet
-
-ISheetRepository <|.r. LocalRepository
-IAnswerRepository <|.r. LocalRepository
-ISharedSheetRepository <|.r. LocalRepository
-
-LocalRepository -d-> SheetDao
-LocalRepository -d-> AnswerDao
-LocalRepository -d-> SharedSheetDao
-
-SheetSelectView -d-> LocalRepository
-CreateSheetView -d-> LocalRepository
-InputView -d-> LocalRepository
-FinishMarkView -d-> LocalRepository
-SheetList -d-> LocalRepository
 
 @enduml

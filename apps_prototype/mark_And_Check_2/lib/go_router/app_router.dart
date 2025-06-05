@@ -11,6 +11,4 @@ class AppRouter{
 
   static void toCreateMarkSheet(BuildContext context)=>
       context.push(RoutePathName.createMarkSheet);
-  static void toSelectMarkSheet(BuildContext context)=>
-      context.push(RoutePathName.selectMarkSheet);
 }

@@ -10,15 +10,20 @@ Home --> Check : Push Check button
 
 state Mark{
 [*] --> SelectSheet
-SelectSheet -d--> input : Select Sheet on view
+SelectSheet --> input : Select Free Mode
 SelectSheet --> CreateNewSheet : Push + button
 CreateNewSheet -> input
 
+SelectSheet --> Continue : Push from history
+Continue -l> input
+Continue -d>  getItm
+getItm -u> Continue
 
-
-input --> finish : push "complete button"
+input --> finish
 finish --> Check.SelectAnswerFIle : Select Auto Score
 finish --> Check.SelfInput : Select Manual Score
+finish --> SaveMark : Select Save Mark
+SaveMark --> finish : Finish Save Mark
 }
 
 state Share{
@@ -28,14 +33,14 @@ ShareHome --> Share.export
 }
 
 state Check{
-SheetList:保存済みシートが並んでおり、それぞれAutoとSelfのボタンがある。
-[*] --> SheetList
-SheetList --> SelectAnswerFIle
-SheetList --> SelfInput
+[*] --> CheckHome
+CheckHome --> SelectAnswerFIle
+CheckHome --> SelfInput
 
 SelfInput--> ShowScore
 SelectAnswerFIle --> ShowScore
 SelectAnswerFIle --> import
 }
+
 
 @enduml
