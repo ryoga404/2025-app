@@ -8,7 +8,7 @@ plugins {
 android {
     namespace = "Asahiro.kcs.R1A1.mark_and_check"
     compileSdk = flutter.compileSdkVersion
-    ndkVersion = flutter.ndkVersion
+    ndkVersion = "27.0.12077973"
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
