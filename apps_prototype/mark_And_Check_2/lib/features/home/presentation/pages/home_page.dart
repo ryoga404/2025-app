@@ -1,16 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:mark_and_check/go_router/route_path_name.dart';
 
 /// アプリケーションのホーム画面
-class HomePage extends StatelessWidget {
+class HomePage extends ConsumerWidget {
   const HomePage({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Mark And Check'),
-      ),
+      appBar: AppBar(title: const Text('Mark And Check')),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -20,10 +21,10 @@ class HomePage extends StatelessWidget {
               context,
               'マーク',
               Icons.edit_document,
-              () => context.push('/mark'),
+              () => context.push(RoutePathName.selectMarkSheet),
             ),
             const SizedBox(height: 16),
-            
+
             // 共有機能へのボタン
             _buildFeatureButton(
               context,
@@ -32,7 +33,7 @@ class HomePage extends StatelessWidget {
               () => context.push('/share'),
             ),
             const SizedBox(height: 16),
-            
+
             // チェック機能へのボタン
             _buildFeatureButton(
               context,
@@ -62,4 +63,4 @@ class HomePage extends StatelessWidget {
       ),
     );
   }
-} 
+}

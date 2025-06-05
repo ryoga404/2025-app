@@ -4,11 +4,12 @@ part 'sheet.freezed.dart';
 part 'sheet.g.dart';
 
 @freezed
-abstract class Sheet with _$Sheet {
+abstract class Sheet with _$Sheet{
 
   const factory Sheet(
-      String name,
-      int id,
+      int? id,
+      String name
+
       ) = _Sheet;
 
   factory Sheet.fromJson(Map<String, dynamic> json) => _$SheetFromJson(json);

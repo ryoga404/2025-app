@@ -3,37 +3,47 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path_provider/path_provider.dart';
 
-final appDatabaseManagerProvider = Provider((ref) {
-  return AppDatabaseManager();
-}); //データベースのインスタンスを作成し、以降はインスタンスを返す
-
+//DBのパスを求め、DBを作成・提供するクラス。
 class AppDatabaseManager {
-  late Database db;
-
-  AppDatabaseManager() {
-    _initDatabase();
+  factory AppDatabaseManager(){
+    return _instance;
   }
 
-  Future<void> _initDatabase() async {
-    var dbFilePath = '';
+  static final AppDatabaseManager _instance = AppDatabaseManager._();
 
+  AppDatabaseManager._();
+
+  //Databaseとゲッター
+  final Future<Database> _db = _getDatabase();
+  Future<Database> getDatabase() =>_db;
+
+  //データベースのPathを取得
+  static Future<String> _getPath() async {
+
+    String dbFilePath = '';
     if (Platform.isAndroid) {
       dbFilePath = await getDatabasesPath(); // Androidであれば「getDatabasesPath」を利用
     } else if (Platform.isIOS) {
       final dbDirectory =
-          await getLibraryDirectory(); // iOSであれば「getLibraryDirectory」を利用
+      await getLibraryDirectory(); // iOSであれば「getLibraryDirectory」を利用
       dbFilePath = dbDirectory.path;
     } else {
       throw Exception(
         'Unable to determine platform.',
       ); // プラットフォームが判別できない場合はExceptionをthrow
     }
+    return '$dbFilePath/markAndCheck.db'; //データベースのパス
+  }
 
-    dbFilePath = '$dbFilePath/markAndCheck.db'; //データベースのパス
-
-    db = await openDatabase(
+  static Future<Database> _getDatabase() async {
+    String dbFilePath = await _getPath();
+    return openDatabase(
       dbFilePath,
       version: 1,
+
+      onConfigure: (Database db) async {
+        await db.execute('PRAGMA foreign_keys = ON'); //外部キー制約を有効化
+      },
 
       onUpgrade: (Database db, int oldVersion, int newVersion) async {
         //スキーマバージョンが違う時実行
@@ -48,20 +58,22 @@ class AppDatabaseManager {
           }
         }
       },
-
+      //データベースがない時に実行
       onCreate: (Database db, int version) async {
-        //データベースがない時に実行
-
         await db.execute(
           'CREATE TABLE sheets'
-          '(id INTEGER PRIMARY KEY AUTOINCREMENT, name STRING',
+              '(id INTEGER PRIMARY KEY, name STRING)',
         ); //sheetsテーブル作成
-        await db.execute('''CREATE TABLE answers(
-              id INTEGER PRIMARY KEY,
-              index INTEGER,
+        await db.execute('''
+              CREATE TABLE answers(
+              sheet_id INTEGER PRIMARY KEY,
+              num INTEGER,
               answer INTEGER,
               
-              FOREIGN KEY(id) REFERENCES sheets(id))'''); //answersテーブル作成
+              FOREIGN KEY(sheet_id) 
+              REFERENCES sheets(id)
+              ON DELETE CASCADE)
+              '''); //answersテーブル作成
       },
     );
   }
