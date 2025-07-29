@@ -11,7 +11,7 @@ class MyBrowserApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: '検索付きブラウザ',
+      title: '検索付き',
       theme: ThemeData(primarySwatch: Colors.blue),
       home: SearchBrowser(),
     );
