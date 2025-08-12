@@ -1,87 +1,54 @@
-import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:webview_flutter/webview_flutter.dart';
+import 'package:web_browser/treeview.dart';
 
 void main() {
-  WidgetsFlutterBinding.ensureInitialized();
-  runApp(MyBrowserApp());
+  runApp(const MyApp());
 }
 
-class MyBrowserApp extends StatelessWidget {
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: '検索付き',
-      theme: ThemeData(primarySwatch: Colors.blue),
-      home: SearchBrowser(),
+      title: 'Flutter Demo',
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+      ),
+      home: const MyHomePage(title: 'Flutter Demo Home Page'),
     );
   }
 }
 
-class SearchBrowser extends StatefulWidget {
+class MyHomePage extends StatefulWidget {
+  const MyHomePage({super.key, required this.title});
+
+  final String title;
+
   @override
-  _SearchBrowserState createState() => _SearchBrowserState();
+  State<MyHomePage> createState() => _MyHomePageState();
 }
 
-class _SearchBrowserState extends State<SearchBrowser> {
-  late final WebViewController _controller;
-  final TextEditingController _searchController =
-  TextEditingController(text: 'Flutter');
-
+class _MyHomePageState extends State<MyHomePage> {
   @override
   void initState() {
     super.initState();
-    // WebViewController の初期化
-    _controller = WebViewController()
-      ..setJavaScriptMode(JavaScriptMode.unrestricted)
-      ..loadRequest(Uri.parse('https://www.google.com'));
-  }
-
-  void _handleSearch() {
-    String input = _searchController.text.trim();
-    if (input.isEmpty) return;
-
-    Uri uri;
-    if (input.startsWith('http')) {
-      uri = Uri.parse(input);
-    } else if (input.contains('.') && !input.contains(' ')) {
-      uri = Uri.parse('https://$input');
-    } else {
-      final query = Uri.encodeComponent(input);
-      uri = Uri.parse('https://www.google.com/search?q=$query');
-    }
-
-    _controller.loadRequest(uri);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => const TreeViewPage()),
+      );
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('検索付きブラウザ')),
-      body: Column(
-        children: [
-          Row(
-            children: [
-              Expanded(
-                child: Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 8.0),
-                  child: TextField(
-                    controller: _searchController,
-                    decoration: InputDecoration(
-                      hintText: 'URLまたは検索ワードを入力',
-                    ),
-                    onSubmitted: (_) => _handleSearch(),
-                  ),
-                ),
-              ),
-              IconButton(
-                icon: Icon(Icons.search),
-                onPressed: _handleSearch,
-              ),
-            ],
-          ),
-          Expanded(child: WebViewWidget(controller: _controller)),
-        ],
+      appBar: AppBar(
+        title: Text(widget.title),
+      ),
+      body: const Center(
+        child: CircularProgressIndicator(),
       ),
     );
   }
