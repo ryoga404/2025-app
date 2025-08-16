@@ -1,11 +1,21 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'dart:math';
 
 class TreeViewPage extends StatelessWidget {
-  const TreeViewPage({super.key});
+  ///@brief ツリー構造を表示するページ
+  TreeViewPage({super.key});
+
+  final Node rootNode = mockedNode(100,2,);
+  final double nodeWidth = 100;
+  final double nodeHeight = 100;
 
   @override
   Widget build(BuildContext context) {
+    Node node = rootNode;
+    if (kDebugMode) {
+      print('Node max depth: ${node.maxDepth}');
+    }
     return Scaffold(
       appBar: AppBar(title: const Text('Tree View')),
       body: Center(
@@ -15,20 +25,12 @@ class TreeViewPage extends StatelessWidget {
           minScale: 0.5,
           maxScale: 4.0,
           child: SizedBox(
-            width: 1000,
-            height: 1000,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                Expanded(
-                  child: CustomPaint(
-                    painter: MyCustomPainter(),
-                    
-                    child: Text("data"),
-                  ),
-                ),
-                // Expanded(child: NodeWidget(node: mockedNode(3, 5, true))),
-              ],
+            child: SizedBox(
+              width: nodeWidth * 10,
+              height: 3000,
+              child: Column(
+                children: [NodeTileWidget(node: node)]
+              ),
             ),
           ),
         ),
@@ -37,24 +39,42 @@ class TreeViewPage extends StatelessWidget {
   }
 }
 
-class NodeWidget extends StatelessWidget {
+class NodeTileWidget extends StatelessWidget {
+  const NodeTileWidget({super.key, required this.node});
   final Node node;
-
-  const NodeWidget({super.key, required this.node});
-
   @override
   Widget build(BuildContext context) {
     return ExpansionTile(
       title: Text(node.name),
-      controlAffinity: ListTileControlAffinity.leading,
-      childrenPadding: const EdgeInsets.all(10.0),
-      trailing: CustomPaint(),
-      children: node.children.map((child) => NodeWidget(node: child)).toList(),
+      children: node.children.map((child) {
+        return NodeTileWidget(node: child);
+      }).toList(),
     );
   }
 }
 
-class MyCustomPainter extends CustomPainter {
+class NodeWidget extends StatelessWidget {
+  final Node node;
+  final double width;
+  final double height;
+  const NodeWidget({
+    super.key,
+    required this.node,
+    required this.width,
+    required this.height,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: width,
+      height: height,
+      child: CustomPaint(painter: NodePainter(), child: Text(node.name)),
+    );
+  }
+}
+
+class NodePainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     // Custom painting logic goes here
@@ -64,11 +84,6 @@ class MyCustomPainter extends CustomPainter {
       ..strokeWidth = 4.0;
 
     canvas.drawCircle(Offset(size.width / 2, size.height / 2), 100, paint);
-    canvas.drawLine(
-      Offset(0, size.height / 2),
-      Offset(size.width, size.height / 2),
-      paint,
-    );
   }
 
   @override
@@ -78,20 +93,59 @@ class MyCustomPainter extends CustomPainter {
 }
 
 class Node {
+  ///ツリー構造のノードを表すクラス
+  ///
+  ///各ノードは名前[name]、子ノードのリスト[children]、親ノード[parent]を持つ。
+  ///加えて、ノードの深さ[maxDepth]と幅[maxWidth]がそれぞれ初回参照時に計算される。
+
   final String _name;
   final List<Node> _children;
   final Node? _parent;
+  late final int _maxDepth = _serchDepth();
+  // late final List<int> _widthList = _listingWidth();
 
+  /// コンストラクタ
+  ///[name]ノードの名前
+  ///[parent]親ノード.ルートノードの場合はnull
   Node(this._name, [this._parent]) : _children = [];
 
   void addChild(String childName) {
     _children.add(Node(childName, this));
   }
 
-  Node get parent => _parent ?? (throw NoParentException());
+  int _serchDepth() {
+    ///自分の深さを計算する。
+    ///子ノード自身の深さを要求し、未計算であれば子ノードが更に下へ要求することで計算される。
+    ///計算量増大の可能性あり。
+
+    //0で初期化
+    int depth = 0;
+    for (Node child in _children) {
+      // 子ノードの深さに1を加えた値（＝自分を0とした、そのノードに向かった深さ）と、
+      // 現在のdepthを比較し、大きければdepthを更新する。
+      if (depth < child.maxDepth + 1) depth = child.maxDepth + 1;
+    }
+
+    return depth;
+  }
+
+  // List<int> _listingWidth() {
+  //   //0で初期化
+  //   int width = 0;
+  //   for (Node child in _children) {
+  //     // 子ノードの幅と現在のwidthを比較し、大きければwidthを更新する。
+  //     if (width < child.maxWidth) width = child.maxWidth;
+  //   }
+
+  //   return width + 1; // 自分自身の幅を加える
+
+  // }
 
   String get name => _name;
   List<Node> get children => _children;
+  Node get parent => _parent ?? (throw NoParentException());
+  int get maxDepth => _maxDepth;
+  // int get widthList => _widthList;
 }
 
 class NoParentException implements Exception {
@@ -99,7 +153,7 @@ class NoParentException implements Exception {
   String toString() => 'No parent found for this node';
 }
 
-Node mockedNode(int depth, int childCount, [ramdomChildCount = false]) {
+Node mockedNode(int depth, int childCount, [bool ramdomChildCount = false]) {
   ///@brief モックのツリー構造を生成する。
   ///@param depth ノードの深さ
   ///@param childCount 各ノードの子ノード数
@@ -136,4 +190,7 @@ Node mockedNode(int depth, int childCount, [ramdomChildCount = false]) {
   childGenerator(rootNode, childFunction, 0);
 
   return rootNode;
+}
+class _NodeDepth{
+  ///mockedNodeを生成するためのクラス
 }
