@@ -28,7 +28,7 @@ Node mockedNode(int depth, int childCount, [bool ramdomChildCount = false]) {
     // 子ノードを生成
     for (int i = 0; i < childFunction(); i++) {
       Node childNode = Node('$node.${i + 1}', current.node);
-      current.node.addChild(childNode.name);
+      current.node.addChild(childNode);
       // 子ノードを待機列に追加
       waitList.add(_NodeDepth(childNode, current.depth + 1));
     }
