@@ -1,3 +1,9 @@
+# FVM Version Cache
+.fvm/versions/
+.fvmrc
+# FVM config file
+.fvm/fvm_config.json
+
 # Miscellaneous
 *.class
 *.log
