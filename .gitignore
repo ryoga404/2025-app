@@ -1,7 +1,8 @@
 
 # FVM Version Cache
-.fvm/
+.fvm/versions/
 .fvmrc
+# VS Code settings
 .vscode/launch.json
 .vscode/settings.json
 web_browser/android/gradle.properties
