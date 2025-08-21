@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:web_browser/home_page.dart';
+import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'dart:developer'; // log関数を使用するためにインポート
+import 'browser_view.dart';
 
 void main() {
   log('main関数が開始されました。'); // main関数の開始ログ
@@ -20,6 +22,7 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
       ),
       home: const MyHomePage(title: 'Flutter Demo Home Page'),
+    //home: InAppWebviewSample()
     );
   }
 }

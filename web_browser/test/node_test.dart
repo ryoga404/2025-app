@@ -1,5 +1,6 @@
 import 'package:test/test.dart';
-import 'package:web_browser/node.dart';
+
+import '../lib/node/node.dart';
 
 void main() {
   group('Node', () {

@@ -1,6 +1,8 @@
 import 'dart:ui';
 
-import 'package:web_browser/node.dart';
+import '../node/node.dart';
+
+
 
 ///ノードを描画のための情報を保持するクラス
 class RenderNode {
