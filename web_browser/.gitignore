@@ -1,6 +1,17 @@
+# FVM
+
+.fvm/*
+! .fvm/fvm_config.json
+
+#natives
+android/*
+ios/*
+macos/*
+windows/*
+linux/*
 # Miscellaneous
 *.class
-*.log
+*.logss
 *.pyc
 *.swp
 .DS_Store

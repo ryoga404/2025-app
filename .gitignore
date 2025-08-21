@@ -1,0 +1,19 @@
+
+
+.fvmrc
+# VS Code settings
+.vscode/launch.json
+.vscode/settings.json
+web_browser/android/gradle.properties
+
+web_browser/android/gradle/wrapper/gradle-wrapper.properties
+
+# Flutter generated files
+.dart_tool/
+.packages
+build/
+*.iml
+.idea/
+ios/.symlinks/
+android/.gradle/
+android/local.properties
