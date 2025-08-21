@@ -1,7 +1,7 @@
 # FVM
 
 .fvm/*
-!.fvm/fvm_config.json
+! .fvm/fvm_config.json
 .fvmrc
 
 # Miscellaneous
