@@ -1,7 +1,5 @@
 
 
-.fvm/*
-! .fvm/fvm_config.json
 .fvmrc
 # VS Code settings
 .vscode/launch.json
