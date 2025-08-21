@@ -1,9 +1,9 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:web_browser/mocked_node.dart';
+import 'package:web_browser/node/mocked_node.dart';
 import 'dart:developer'; // log関数を使用するためにインポート
 
-import 'package:web_browser/node.dart';
+import 'package:web_browser/node/node.dart';
 import 'package:web_browser/tree_view/render_node.dart';
 
 class TreeViewPage extends StatelessWidget {
