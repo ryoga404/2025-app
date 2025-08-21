@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:web_browser/treeview.dart';
+import 'package:web_browser/tree_view/treeview.dart';
 
 class MyHomePage extends StatelessWidget {
   const MyHomePage({super.key, required this.title});

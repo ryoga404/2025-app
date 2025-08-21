@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:web_browser/home_page.dart';
+import 'dart:developer'; // log関数を使用するためにインポート
 
 void main() {
+  log('main関数が開始されました。'); // main関数の開始ログ
   runApp(const MyApp());
+  log('runAppが呼び出されました。'); // runApp呼び出し後のログ
 }
 
 class MyApp extends StatelessWidget {
@@ -10,6 +13,7 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    log('MyAppのbuildメソッドが呼び出されました。'); // buildメソッドの開始ログ
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
