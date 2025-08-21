@@ -1,6 +1,6 @@
 import 'dart:math';
 
-import 'package:web_browser/node.dart';
+import 'package:web_browser/node/node.dart';
 
 Node mockedNode(int depth, int childCount, [bool ramdomChildCount = false]) {
   // randomChildCountに応じて関数を設定
@@ -21,13 +21,12 @@ Node mockedNode(int depth, int childCount, [bool ramdomChildCount = false]) {
   while (waitList.isNotEmpty) {
     _NodeDepth current = waitList.removeLast();
     Node node = current.node;
-
     //深さが指定の深さを超えたらスキップ
     if (current.depth >= depth) continue;
 
     // 子ノードを生成
     for (int i = 0; i < childFunction(); i++) {
-      Node childNode = Node('$node.${i + 1}', current.node);
+      Node childNode = Node('${node.name}.${i + 1}', current.node);
       current.node.addChild(childNode);
       // 子ノードを待機列に追加
       waitList.add(_NodeDepth(childNode, current.depth + 1));
