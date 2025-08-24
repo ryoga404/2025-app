@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'node/node.dart'; // Nodeクラスは編集せずインポート
 
-main
 class InAppWebviewSample extends StatefulWidget {
   const InAppWebviewSample({super.key});
 

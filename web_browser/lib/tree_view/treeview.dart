@@ -6,8 +6,8 @@ import 'dart:developer'; // log関数を使用するためにインポート
 import 'package:web_browser/node/node.dart';
 import 'package:web_browser/tree_view/render_node.dart';
 
+///ツリー構造を表示するページ
 class TreeViewPage extends StatelessWidget {
-  ///@brief ツリー構造を表示するページ
   TreeViewPage({super.key}) {
     log('TreeViewPageコンストラクタが呼び出されました。'); // コンストラクタの開始ログ
   }
@@ -44,6 +44,7 @@ class TreeViewPage extends StatelessWidget {
   }
 }
 
+///ツリーを構成する１つのノードのウィジェット
 class NodeWidget extends StatelessWidget {
   final RenderNode node;
   final double width;
@@ -61,16 +62,17 @@ class NodeWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     log('NodeWidgetのbuildメソッドが呼び出されました。'); // NodeWidget buildメソッドの開始ログ
-    return CustomPaint(painter: NodePainter(node), child: Text(node.node.name));
+    return CustomPaint(painter: _NodePainter(node), child: Text(node.node.name));
   }
 }
 
-class NodePainter extends CustomPainter {
+///ノードを実際に描画するだけのクラス
+class _NodePainter extends CustomPainter {
   final RenderNode node;
   final List<RenderNode> children;
 
   //painter
-  NodePainter(this.node) : children = [] {
+  _NodePainter(this.node) : children = [] {
     log('NodePainterコンストラクタが呼び出されました。'); // NodePainterコンストラクタの開始ログ
   }
   @override
@@ -81,9 +83,10 @@ class NodePainter extends CustomPainter {
       ..style = PaintingStyle.fill
       ..strokeWidth = 4.0;
 
-      //自身を描画
+    //自身を描画
     canvas.drawCircle(Offset(size.width / 2, size.height / 2), 100, paint);
   }
+
   //子ノードまでの線を描画するメソッド
   void drawChildLines(Canvas canvas, RenderNode node, Paint paint) {
     log('NodePainterの子ノードまでの線を描画しています。'); // 子ノードまでの線の描画ログ
