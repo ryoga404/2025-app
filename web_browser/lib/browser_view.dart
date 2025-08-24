@@ -1,7 +1,7 @@
 import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
-import 'node/node.dart'; // Nodeクラスは編集せずインポート
+import 'node/node.dart';
 
 class InAppWebviewSample extends StatefulWidget {
   const InAppWebviewSample({super.key});
@@ -11,123 +11,130 @@ class InAppWebviewSample extends StatefulWidget {
 }
 
 class _InAppWebviewSampleState extends State<InAppWebviewSample> {
-  // WebViewのコントローラ
   late InAppWebViewController webViewController;
-
-  // WebViewの設定
   final InAppWebViewSettings settings = InAppWebViewSettings(
-    javaScriptEnabled: true, // JavaScriptを有効化
-    useOnDownloadStart: true, // ダウンロード開始イベントを有効化
+    javaScriptEnabled: true,
+    useOnDownloadStart: true,
   );
 
-  // 初期表示URL
   String initialUrl = 'https://google.com/';
-
-  // カレントノード
   late Node rootNode;
   late Node currentNode;
+  final Map<String, String> urlTitles = {};
+
+  int navigationCount = 0; // 遷移回数をカウント
 
   @override
   void initState() {
     super.initState();
-    // 初期ルートノードは「Google検索」としておく
-    rootNode = Node("Google");
+    rootNode = Node("__ROOT__");
     currentNode = rootNode;
+    urlTitles[initialUrl] = "Google"; // 初期タイトル
   }
 
-  void navigateTo(String newUrl) {
-    webViewController.loadUrl(urlRequest: URLRequest(url: WebUri(newUrl)));
+  void navigateTo(String url) {
+    webViewController.loadUrl(urlRequest: URLRequest(url: WebUri(url)));
+  }
+
+  Node? getParent(Node node) {
+    try {
+      return node.parent;
+    } catch (_) {
+      return null;
+    }
   }
 
   @override
   Widget build(BuildContext context) {
+    final parentNode = getParent(currentNode);
+
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('ブラウザ'),
-      ),
+      appBar: AppBar(title: const Text('ブラウザ')),
       body: SafeArea(
         child: Column(
           children: [
-            // 上部ボタン（親ノードがあるときだけ表示）
-            if (currentNode != rootNode)
+            // 上部ボタン（親ノード）
+            if (parentNode != null)
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 8),
                 child: GestureDetector(
-                  onTap: () {
-                    navigateTo(currentNode.parent.name);
-                    setState(() {
-                      currentNode = currentNode.parent;
-                    });
-                  },
+                  onTap: () => navigateTo(parentNode.name),
                   child: Container(
                     width: 160,
                     height: 40,
                     color: Colors.blue,
                     alignment: Alignment.center,
                     child: Text(
-                      currentNode.parent.name,
+                      urlTitles[parentNode.name] ?? parentNode.name,
+                      overflow: TextOverflow.ellipsis,
                       style: const TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                      ),
+                          color: Colors.white, fontWeight: FontWeight.bold),
                     ),
                   ),
                 ),
               ),
 
-            // ================= WebView本体 =================
+            // WebView
             Expanded(
               child: InAppWebView(
                 initialUrlRequest: URLRequest(url: WebUri(initialUrl)),
                 initialSettings: settings,
-                onWebViewCreated: (controller) => webViewController = controller,
-                onLoadStart: (controller, url) {
-                  log('Page started loading: $url');
-                },
+                onWebViewCreated: (controller) =>
+                webViewController = controller,
                 onLoadStop: (controller, loadedUrl) async {
                   if (loadedUrl == null) return;
-                  log('Page finished loading: $loadedUrl');
+                  final urlStr = loadedUrl.toString();
+                  String? title = await controller.getTitle();
+                  urlTitles[urlStr] =
+                  (title != null && title.isNotEmpty) ? title : urlStr;
 
-                  final newUrl = loadedUrl.toString();
-
-                  // 同じURLならスキップ
-                  if (currentNode.name == newUrl) return;
-
-                  // 子ノードを作って追加
-                  final newNode = Node(newUrl, currentNode);
-                  currentNode.addChild(newNode);
-
-                  setState(() {
+                  // 1回目と2回目の遷移はWebViewで表示
+                  if (navigationCount < 2) {
+                    final newNode = Node(urlStr, currentNode);
+                    currentNode.addChild(newNode);
                     currentNode = newNode;
-                  });
+                    navigationCount++;
+                  }
+
+                  setState(() {});
                 },
-                onProgressChanged: (controller, progress) =>
-                    log('Loading progress: $progress%'),
+                shouldOverrideUrlLoading:
+                    (controller, navigationAction) async {
+                  final urlStr = navigationAction.request.url.toString();
+                  log('リンククリック: $urlStr');
+
+                  // 遷移回数が2回を超えた場合はWebView遷移させず下部に追加
+                  if (navigationCount >= 2) {
+                    final newNode = Node(urlStr, currentNode);
+                    currentNode.addChild(newNode);
+                    urlTitles[urlStr] = urlStr;
+                    setState(() {});
+                    return NavigationActionPolicy.CANCEL;
+                  }
+
+                  return NavigationActionPolicy.ALLOW;
+                },
               ),
             ),
 
-            // ================= 下部ボタン群（現在の子ノードを表示） =================
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 10),
-              child: SizedBox(
-                height: 50,
-                child: SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  child: Row(
-                    children: currentNode.children.map((childNode) {
-                      return Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 5),
-                        child: buildBottomButton(childNode),
-                      );
-                    }).toList(),
-                  ),
+            // 下部ボタン（子ノードを横スクロールで表示）
+            SizedBox(
+              height: 50,
+              child: SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Row(
+                  children: currentNode.children.map((childNode) {
+                    return Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 5),
+                      child: buildBottomButton(childNode),
+                    );
+                  }).toList(),
                 ),
               ),
             ),
           ],
         ),
       ),
-
       floatingActionButton: FloatingActionButton(
         child: const Icon(Icons.arrow_back),
         onPressed: () async {
@@ -139,32 +146,24 @@ class _InAppWebviewSampleState extends State<InAppWebviewSample> {
     );
   }
 
-  // 下部ボタン作成（子ノード用）
   Widget buildBottomButton(Node node) {
     return GestureDetector(
-      onTap: () {
-        navigateTo(node.name);
-        setState(() {
-          currentNode = node;
-        });
-      },
+      onTap: () => navigateTo(node.name),
       child: Container(
         width: 160,
         height: 40,
         color: Colors.green,
         alignment: Alignment.center,
         child: Text(
-          node.name,
-          overflow: TextOverflow.ellipsis, // URLが長い場合は省略表示
+          urlTitles[node.name] ?? node.name,
+          overflow: TextOverflow.ellipsis,
           style: const TextStyle(
-            color: Colors.white,
-            fontWeight: FontWeight.bold,
-            fontSize: 12,
-          ),
+              color: Colors.white, fontWeight: FontWeight.bold, fontSize: 12),
         ),
       ),
     );
   }
 }
 
-//ボタンの表示をHTMLのタイトルタグを格納
+//若干タイミングがバグっている点を修正
+//下部ボタン一部タイトルタグがとれていない。（BODYの一部で代用？？）

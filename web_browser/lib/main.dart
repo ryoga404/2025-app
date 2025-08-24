@@ -14,7 +14,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     log('MyAppのbuildメソッドが呼び出されました。'); // buildメソッドの開始ログ
-    final bool toBrowser = false; // ここでtoBrowserを設定
+    final bool toBrowser = true; // ここでtoBrowserを設定
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
