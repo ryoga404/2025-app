@@ -1,6 +1,5 @@
 import 'dart:math';
-
-import 'package:web_browser/node/node.dart';
+import 'node.dart';
 
 Node mockedNode(int depth, int childCount, [bool ramdomChildCount = false]) {
   // randomChildCountに応じて関数を設定
