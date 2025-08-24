@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'node/node.dart'; // Nodeクラスは編集せずインポート
 
+main
 class InAppWebviewSample extends StatefulWidget {
   const InAppWebviewSample({super.key});
 
@@ -11,15 +12,20 @@ class InAppWebviewSample extends StatefulWidget {
 }
 
 class _InAppWebviewSampleState extends State<InAppWebviewSample> {
+
+  // WebViewのコントローラ
   late InAppWebViewController webViewController;
 
+  // WebViewの設定
   final InAppWebViewSettings settings = InAppWebViewSettings(
-    javaScriptEnabled: true,
-    useOnDownloadStart: true,
+    javaScriptEnabled: true, // JavaScriptを有効化
+    useOnDownloadStart: true, // ダウンロード開始イベントを有効化
   );
 
+  // 初期表示URL
   String url = 'https://google.com/';
 
+  // 下部ボタンのリスト（ここに増やせばOK）
   final List<Map<String, dynamic>> bottomButtons = [
     {'label': 'Yahoo', 'color': Colors.orange, 'url': 'https://yahoo.co.jp'},
     {'label': 'Google', 'color': Colors.blue, 'url': 'https://google.com'},
@@ -28,6 +34,7 @@ class _InAppWebviewSampleState extends State<InAppWebviewSample> {
     {'label': 'DuckDuckGo', 'color': Colors.purple, 'url': 'https://duckduckgo.com'},
     {'label': 'GitHub', 'color': Colors.black, 'url': 'https://github.com'},
   ];
+
 
   // ========= Node管理 =========
   Node? rootNode;
@@ -88,6 +95,7 @@ class _InAppWebviewSampleState extends State<InAppWebviewSample> {
         child: Column(
           children: [
             // 上部ボタン（Googleのみ残す）
+
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 8),
               child: GestureDetector(
@@ -108,7 +116,8 @@ class _InAppWebviewSampleState extends State<InAppWebviewSample> {
               ),
             ),
 
-            // WebView本体
+
+            // ================= WebView本体 =================
             Expanded(
               child: InAppWebView(
                 initialUrlRequest: URLRequest(url: WebUri(url)),
@@ -130,20 +139,20 @@ class _InAppWebviewSampleState extends State<InAppWebviewSample> {
                     }
                   }
                 },
+
                 onLoadStop: (controller, url) async =>
                     log('Page finished loading: $url'),
                 onProgressChanged: (controller, progress) =>
                     log('Loading progress: $progress%'),
               ),
             ),
-
-            // 下部ボタン群
+            // ================= 下部ボタン群（横スクロール可能） =================
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 10),
               child: SizedBox(
-                height: 50,
+                height: 50, // ボタンエリアの高さ
                 child: SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
+                  scrollDirection: Axis.horizontal, // 横スクロール
                   child: Row(
                     children: bottomButtons.map((btn) {
                       return Padding(
@@ -162,6 +171,7 @@ class _InAppWebviewSampleState extends State<InAppWebviewSample> {
           ],
         ),
       ),
+      
       floatingActionButton: FloatingActionButton(
         child: const Icon(Icons.arrow_back),
         onPressed: () async {
