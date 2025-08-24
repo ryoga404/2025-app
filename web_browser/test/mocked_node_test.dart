@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
-import '../lib/node/node.dart';
-import '../lib/node/mocked_node.dart';
+import 'package:web_browser/node/node.dart';
+import 'package:web_browser/node/mocked_node.dart';
 
 void main() {
   group('mockedNode', () {
