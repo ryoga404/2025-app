@@ -86,5 +86,3 @@ class NoParentException implements Exception {
   @override
   String toString() => 'No parent found for this node';
 }
-
-/// モックのツリー構造を作成する

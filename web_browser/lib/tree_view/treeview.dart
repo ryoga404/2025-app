@@ -48,7 +48,7 @@ class NodeWidget extends StatelessWidget {
   final RenderNode node;
   final double width;
   final double height;
-  bool isExpanded = true;
+  final bool isExpanded = true;
   NodeWidget({
     super.key,
     required this.node,
@@ -69,6 +69,7 @@ class NodePainter extends CustomPainter {
   final RenderNode node;
   final List<RenderNode> children;
 
+  //painter
   NodePainter(this.node) : children = [] {
     log('NodePainterコンストラクタが呼び出されました。'); // NodePainterコンストラクタの開始ログ
   }
@@ -79,10 +80,16 @@ class NodePainter extends CustomPainter {
       ..color = Colors.blue
       ..style = PaintingStyle.fill
       ..strokeWidth = 4.0;
+
+      //自身を描画
     canvas.drawCircle(Offset(size.width / 2, size.height / 2), 100, paint);
-    for (final child in children) {
-      log('NodePainterの子ノードを描画しています。'); // 子ノードの描画ログ
+  }
+  //子ノードまでの線を描画するメソッド
+  void drawChildLines(Canvas canvas, RenderNode node, Paint paint) {
+    log('NodePainterの子ノードまでの線を描画しています。'); // 子ノードまでの線の描画ログ
+    for (final child in node.children) {
       canvas.drawLine(node.position, child.position, paint);
+      drawChildLines(canvas, child, paint); // 再帰的に子ノードを描画
     }
   }
 
