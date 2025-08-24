@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'node/node.dart'; // Nodeクラスは編集せずインポート
 
-main
 class InAppWebviewSample extends StatefulWidget {
   const InAppWebviewSample({super.key});
 
@@ -12,7 +11,6 @@ class InAppWebviewSample extends StatefulWidget {
 }
 
 class _InAppWebviewSampleState extends State<InAppWebviewSample> {
-
   // WebViewのコントローラ
   late InAppWebViewController webViewController;
 
@@ -23,60 +21,22 @@ class _InAppWebviewSampleState extends State<InAppWebviewSample> {
   );
 
   // 初期表示URL
-  String url = 'https://google.com/';
+  String initialUrl = 'https://google.com/';
 
-  // 下部ボタンのリスト（ここに増やせばOK）
-  final List<Map<String, dynamic>> bottomButtons = [
-    {'label': 'Yahoo', 'color': Colors.orange, 'url': 'https://yahoo.co.jp'},
-    {'label': 'Google', 'color': Colors.blue, 'url': 'https://google.com'},
-    {'label': 'YouTube', 'color': Colors.red, 'url': 'https://youtube.com'},
-    {'label': 'Bing', 'color': Colors.green, 'url': 'https://bing.com'},
-    {'label': 'DuckDuckGo', 'color': Colors.purple, 'url': 'https://duckduckgo.com'},
-    {'label': 'GitHub', 'color': Colors.black, 'url': 'https://github.com'},
-  ];
+  // カレントノード
+  late Node rootNode;
+  late Node currentNode;
 
-
-  // ========= Node管理 =========
-  Node? rootNode;
-  Node? currentNode;
+  @override
+  void initState() {
+    super.initState();
+    // 初期ルートノードは「Google検索」としておく
+    rootNode = Node("Google");
+    currentNode = rootNode;
+  }
 
   void navigateTo(String newUrl) {
     webViewController.loadUrl(urlRequest: URLRequest(url: WebUri(newUrl)));
-  }
-
-  // ========= 木構造表示用 =========
-  List<Widget> _buildTree(Node node, {int depth = 0}) {
-    List<Widget> widgets = [];
-    widgets.add(Padding(
-      padding: EdgeInsets.only(left: depth * 16.0),
-      child: Text("• ${node.name}"),
-    ));
-    for (var child in node.children) {
-      widgets.addAll(_buildTree(child, depth: depth + 1));
-    }
-    return widgets;
-  }
-
-  void _showTreePopup() {
-    if (rootNode == null) return;
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('ツリー構造'),
-        content: SizedBox(
-          width: double.maxFinite,
-          child: ListView(
-            children: _buildTree(rootNode!),
-          ),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('閉じる'),
-          ),
-        ],
-      ),
-    );
   }
 
   @override
@@ -84,84 +44,80 @@ class _InAppWebviewSampleState extends State<InAppWebviewSample> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('ブラウザ'),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.account_tree),
-            onPressed: _showTreePopup,
-          ),
-        ],
       ),
       body: SafeArea(
         child: Column(
           children: [
-            // 上部ボタン（Googleのみ残す）
-
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 8),
-              child: GestureDetector(
-                onTap: () => navigateTo('https://google.com/'),
-                child: Container(
-                  width: 120,
-                  height: 40,
-                  color: Colors.blue,
-                  alignment: Alignment.center,
-                  child: const Text(
-                    'Google',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
+            // 上部ボタン（親ノードがあるときだけ表示）
+            if (currentNode != rootNode)
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 8),
+                child: GestureDetector(
+                  onTap: () {
+                    navigateTo(currentNode.parent.name);
+                    setState(() {
+                      currentNode = currentNode.parent;
+                    });
+                  },
+                  child: Container(
+                    width: 160,
+                    height: 40,
+                    color: Colors.blue,
+                    alignment: Alignment.center,
+                    child: Text(
+                      currentNode.parent.name,
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ),
                 ),
               ),
-            ),
-
 
             // ================= WebView本体 =================
             Expanded(
               child: InAppWebView(
-                initialUrlRequest: URLRequest(url: WebUri(url)),
+                initialUrlRequest: URLRequest(url: WebUri(initialUrl)),
                 initialSettings: settings,
                 onWebViewCreated: (controller) => webViewController = controller,
                 onLoadStart: (controller, url) {
                   log('Page started loading: $url');
-
-                  if (url != null) {
-                    if (rootNode == null) {
-                      // 最初の検索ページ → ルートノード作成
-                      rootNode = Node(url.toString());
-                      currentNode = rootNode;
-                    } else {
-                      // それ以降の遷移 → 子ノードとして追加
-                      Node child = Node(url.toString(), currentNode);
-                      currentNode!.addChild(child);
-                      currentNode = child;
-                    }
-                  }
                 },
+                onLoadStop: (controller, loadedUrl) async {
+                  if (loadedUrl == null) return;
+                  log('Page finished loading: $loadedUrl');
 
-                onLoadStop: (controller, url) async =>
-                    log('Page finished loading: $url'),
+                  final newUrl = loadedUrl.toString();
+
+                  // 同じURLならスキップ
+                  if (currentNode.name == newUrl) return;
+
+                  // 子ノードを作って追加
+                  final newNode = Node(newUrl, currentNode);
+                  currentNode.addChild(newNode);
+
+                  setState(() {
+                    currentNode = newNode;
+                  });
+                },
                 onProgressChanged: (controller, progress) =>
                     log('Loading progress: $progress%'),
               ),
             ),
-            // ================= 下部ボタン群（横スクロール可能） =================
+
+            // ================= 下部ボタン群（現在の子ノードを表示） =================
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 10),
               child: SizedBox(
-                height: 50, // ボタンエリアの高さ
+                height: 50,
                 child: SingleChildScrollView(
-                  scrollDirection: Axis.horizontal, // 横スクロール
+                  scrollDirection: Axis.horizontal,
                   child: Row(
-                    children: bottomButtons.map((btn) {
+                    children: currentNode.children.map((childNode) {
                       return Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 5),
-                        child: buildBottomButton(
-                          btn['label'],
-                          btn['color'],
-                          btn['url'],
-                        ),
+                        child: buildBottomButton(childNode),
                       );
                     }).toList(),
                   ),
@@ -171,39 +127,44 @@ class _InAppWebviewSampleState extends State<InAppWebviewSample> {
           ],
         ),
       ),
-      
+
       floatingActionButton: FloatingActionButton(
         child: const Icon(Icons.arrow_back),
         onPressed: () async {
           if (await webViewController.canGoBack()) {
             await webViewController.goBack();
-            // 木構造の現在ノードも親に戻す
-            if (currentNode?.parent != null) {
-              currentNode = currentNode!.parent;
-            }
           }
         },
       ),
     );
   }
 
-  // 下部ボタン作成
-  Widget buildBottomButton(String label, Color color, String targetUrl) {
+  // 下部ボタン作成（子ノード用）
+  Widget buildBottomButton(Node node) {
     return GestureDetector(
-      onTap: () => navigateTo(targetUrl),
+      onTap: () {
+        navigateTo(node.name);
+        setState(() {
+          currentNode = node;
+        });
+      },
       child: Container(
-        width: 100,
+        width: 160,
         height: 40,
-        color: color,
+        color: Colors.green,
         alignment: Alignment.center,
         child: Text(
-          label,
+          node.name,
+          overflow: TextOverflow.ellipsis, // URLが長い場合は省略表示
           style: const TextStyle(
             color: Colors.white,
             fontWeight: FontWeight.bold,
+            fontSize: 12,
           ),
         ),
       ),
     );
   }
 }
+
+//ボタンの表示をHTMLのタイトルタグを格納
