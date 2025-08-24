@@ -1,10 +1,9 @@
-import 'dart:developer'; // ログ出力用（log関数を使う）
-import 'package:flutter/material.dart'; // FlutterのUIライブラリ
-import 'package:flutter_inappwebview/flutter_inappwebview.dart'; // WebViewライブラリ
+import 'dart:developer';
+import 'package:flutter/material.dart';
+import 'package:flutter_inappwebview/flutter_inappwebview.dart';
+import 'node/node.dart'; // Nodeクラスは編集せずインポート
 
-
-
-// StatefulWidget（状態を持つWidget）
+main
 class InAppWebviewSample extends StatefulWidget {
   const InAppWebviewSample({super.key});
 
@@ -13,6 +12,7 @@ class InAppWebviewSample extends StatefulWidget {
 }
 
 class _InAppWebviewSampleState extends State<InAppWebviewSample> {
+
   // WebViewのコントローラ
   late InAppWebViewController webViewController;
 
@@ -35,19 +35,67 @@ class _InAppWebviewSampleState extends State<InAppWebviewSample> {
     {'label': 'GitHub', 'color': Colors.black, 'url': 'https://github.com'},
   ];
 
-  // ページ遷移用関数
+
+  // ========= Node管理 =========
+  Node? rootNode;
+  Node? currentNode;
+
   void navigateTo(String newUrl) {
-    // WebViewに新しいURLを読み込ませる
     webViewController.loadUrl(urlRequest: URLRequest(url: WebUri(newUrl)));
+  }
+
+  // ========= 木構造表示用 =========
+  List<Widget> _buildTree(Node node, {int depth = 0}) {
+    List<Widget> widgets = [];
+    widgets.add(Padding(
+      padding: EdgeInsets.only(left: depth * 16.0),
+      child: Text("• ${node.name}"),
+    ));
+    for (var child in node.children) {
+      widgets.addAll(_buildTree(child, depth: depth + 1));
+    }
+    return widgets;
+  }
+
+  void _showTreePopup() {
+    if (rootNode == null) return;
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('ツリー構造'),
+        content: SizedBox(
+          width: double.maxFinite,
+          child: ListView(
+            children: _buildTree(rootNode!),
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('閉じる'),
+          ),
+        ],
+      ),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SafeArea( // ノッチ部分を避ける
+      appBar: AppBar(
+        title: const Text('ブラウザ'),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.account_tree),
+            onPressed: _showTreePopup,
+          ),
+        ],
+      ),
+      body: SafeArea(
         child: Column(
           children: [
-            // ================= 上部ボタン =================
+            // 上部ボタン（Googleのみ残す）
+
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 8),
               child: GestureDetector(
@@ -68,22 +116,36 @@ class _InAppWebviewSampleState extends State<InAppWebviewSample> {
               ),
             ),
 
+
             // ================= WebView本体 =================
             Expanded(
               child: InAppWebView(
                 initialUrlRequest: URLRequest(url: WebUri(url)),
                 initialSettings: settings,
-                onWebViewCreated: (controller) =>
-                webViewController = controller,
-                onLoadStart: (controller, url) =>
-                    log('Page started loading: $url'),
+                onWebViewCreated: (controller) => webViewController = controller,
+                onLoadStart: (controller, url) {
+                  log('Page started loading: $url');
+
+                  if (url != null) {
+                    if (rootNode == null) {
+                      // 最初の検索ページ → ルートノード作成
+                      rootNode = Node(url.toString());
+                      currentNode = rootNode;
+                    } else {
+                      // それ以降の遷移 → 子ノードとして追加
+                      Node child = Node(url.toString(), currentNode);
+                      currentNode!.addChild(child);
+                      currentNode = child;
+                    }
+                  }
+                },
+
                 onLoadStop: (controller, url) async =>
                     log('Page finished loading: $url'),
                 onProgressChanged: (controller, progress) =>
                     log('Loading progress: $progress%'),
               ),
             ),
-
             // ================= 下部ボタン群（横スクロール可能） =================
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 10),
@@ -109,10 +171,23 @@ class _InAppWebviewSampleState extends State<InAppWebviewSample> {
           ],
         ),
       ),
+      
+      floatingActionButton: FloatingActionButton(
+        child: const Icon(Icons.arrow_back),
+        onPressed: () async {
+          if (await webViewController.canGoBack()) {
+            await webViewController.goBack();
+            // 木構造の現在ノードも親に戻す
+            if (currentNode?.parent != null) {
+              currentNode = currentNode!.parent;
+            }
+          }
+        },
+      ),
     );
   }
 
-  // ================= 下部ボタン作成関数 =================
+  // 下部ボタン作成
   Widget buildBottomButton(String label, Color color, String targetUrl) {
     return GestureDetector(
       onTap: () => navigateTo(targetUrl),
