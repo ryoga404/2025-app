@@ -1,13 +1,10 @@
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:web_browser/tree_view/search_tree.dart';
 import 'package:web_browser/tree_view/search_tree.dart';
 import '../node/mocked_node.dart';
 import 'dart:developer'; // log関数を使用するためにインポート
 
-import '../node/node.dart';
 import '../tree_view/render_node.dart';
 import 'mocked_render_node.dart';
 
@@ -39,9 +36,9 @@ class TreeViewPage extends StatelessWidget {
           maxScale: 4.0,
           child: SizedBox(
             child: SizedBox(
-              width: nodeWidth * 3,
-              height: 300,
-              child: NodeWidget(node: rootNode, width: 50, height: 50),
+              width: nodeWidth * 50,
+              height: 3000,
+              child: fullRendering()
             ),
           ),
         ),
@@ -62,6 +59,7 @@ class TreeViewPage extends StatelessWidget {
       startNode: rootNode,
       getChildren: (RenderNode node)=> node.children,
       action:(RenderNode node)=>nodes.add(node));
+    nodes.map((node)=>log("${node.node.name}:(${node.position.dx},${node.position.dy})"));
     return nodes.map((node)=>NodeWidget(node: node, width: 10, height: 10)).toList();
   }
 }
