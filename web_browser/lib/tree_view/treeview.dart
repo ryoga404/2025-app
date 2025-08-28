@@ -1,10 +1,15 @@
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:web_browser/node/mocked_node.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:web_browser/tree_view/search_tree.dart';
+import 'package:web_browser/tree_view/search_tree.dart';
+import '../node/mocked_node.dart';
 import 'dart:developer'; // log関数を使用するためにインポート
 
-import 'package:web_browser/node/node.dart';
-import 'package:web_browser/tree_view/render_node.dart';
+import '../node/node.dart';
+import '../tree_view/render_node.dart';
+import 'mocked_render_node.dart';
 
 ///ツリー構造を表示するページ
 class TreeViewPage extends StatelessWidget {
@@ -12,16 +17,17 @@ class TreeViewPage extends StatelessWidget {
     log('TreeViewPageコンストラクタが呼び出されました。'); // コンストラクタの開始ログ
   }
 
-  final Node rootNode = mockedNode(3, 2);
+  final RenderNode rootNode
+   = RenderNode(node:mockedNode(3, 2),position:Offset(10,10));
   final double nodeWidth = 100;
   final double nodeHeight = 100;
 
   @override
   Widget build(BuildContext context) {
     log('TreeViewPageのbuildメソッドが呼び出されました。'); // buildメソッドの開始ログ
-    RenderNode node = RenderNode(node: rootNode, position: Offset(100, 100));
+    mockedRenderNode(rootNode,20,20);
     if (kDebugMode) {
-      print('Node max depth: ${node.node.maxDepth}'); // デバッグモードでノードの最大深度を表示
+      print('Node max depth: ${rootNode.node.maxDepth}'); // デバッグモードでノードの最大深度を表示
     }
     return Scaffold(
       appBar: AppBar(title: const Text('Tree View')),
@@ -35,21 +41,37 @@ class TreeViewPage extends StatelessWidget {
             child: SizedBox(
               width: nodeWidth * 3,
               height: 300,
-              child: NodeWidget(node: node, width: 50, height: 50),
+              child: NodeWidget(node: rootNode, width: 50, height: 50),
             ),
           ),
         ),
       ),
     );
   }
+
+  //全てのnodeWidgetをStackで返す
+  Stack fullRendering(){
+    return Stack(
+      children: getAllNodeWidgets(),
+    );
+  }
+
+  List<NodeWidget> getAllNodeWidgets(){
+    final List<RenderNode> nodes = [];
+    searchTree(
+      startNode: rootNode,
+      getChildren: (RenderNode node)=> node.children,
+      action:(RenderNode node)=>nodes.add(node));
+    return nodes.map((node)=>NodeWidget(node: node, width: 10, height: 10)).toList();
+  }
 }
 
 ///ツリーを構成する１つのノードのウィジェット
+///ノードと、子ノードまでの線の描画を担当
 class NodeWidget extends StatelessWidget {
   final RenderNode node;
   final double width;
   final double height;
-  final bool isExpanded = true;
   NodeWidget({
     super.key,
     required this.node,
@@ -62,7 +84,10 @@ class NodeWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     log('NodeWidgetのbuildメソッドが呼び出されました。'); // NodeWidget buildメソッドの開始ログ
-    return CustomPaint(painter: _NodePainter(node), child: Text(node.node.name));
+    return CustomPaint(
+      painter: _NodePainter(node),
+      child: Text(node.node.name),
+    );
   }
 }
 
@@ -92,7 +117,6 @@ class _NodePainter extends CustomPainter {
     log('NodePainterの子ノードまでの線を描画しています。'); // 子ノードまでの線の描画ログ
     for (final child in node.children) {
       canvas.drawLine(node.position, child.position, paint);
-      drawChildLines(canvas, child, paint); // 再帰的に子ノードを描画
     }
   }
 

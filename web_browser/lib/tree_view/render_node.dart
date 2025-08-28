@@ -2,19 +2,17 @@ import 'dart:ui';
 
 import '../node/node.dart';
 
-
-
-///ノードを描画のための情報を保持するクラス
+///ノードを描画するための情報を保持するクラス
 class RenderNode {
   final Node node;
   final Offset position;
   final List<RenderNode> children;
+  RenderNode? parent;
+  RenderNode({required this.node, required this.position,RenderNode? parent}) : children = [];
 
-  RenderNode({
-    required this.node,
-    required this.position,
-  }): children = node.children
-      .map((child) => RenderNode(node: child, position: position + Offset(0, 100)))
-      .toList();
-
+  void addChild(RenderNode child) {
+    children.add(child);
+  }
 }
+
+
