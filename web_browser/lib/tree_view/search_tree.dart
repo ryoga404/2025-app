@@ -16,6 +16,10 @@ void searchTree<T>({
 
     while(queue.isNotEmpty){
       final T currentNode = queue.removeFirst();
+      List<T> children = getChildren(currentNode);
+      for(T child in children){
+        queue.add(child);
+      }
       action(currentNode);
     }
 }

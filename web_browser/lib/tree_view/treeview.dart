@@ -1,4 +1,3 @@
-
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:web_browser/tree_view/search_tree.dart';
@@ -14,15 +13,17 @@ class TreeViewPage extends StatelessWidget {
     log('TreeViewPageコンストラクタが呼び出されました。'); // コンストラクタの開始ログ
   }
 
-  final RenderNode rootNode
-   = RenderNode(node:mockedNode(3, 2),position:Offset(10,10));
+  final RenderNode rootNode = RenderNode(
+    node: mockedNode(3, 2),
+    position: Offset(100, 100),
+  );
   final double nodeWidth = 100;
   final double nodeHeight = 100;
 
   @override
   Widget build(BuildContext context) {
     log('TreeViewPageのbuildメソッドが呼び出されました。'); // buildメソッドの開始ログ
-    mockedRenderNode(rootNode,20,20);
+    mockedRenderNode(rootNode, 300, 300);
     if (kDebugMode) {
       print('Node max depth: ${rootNode.node.maxDepth}'); // デバッグモードでノードの最大深度を表示
     }
@@ -38,7 +39,7 @@ class TreeViewPage extends StatelessWidget {
             child: SizedBox(
               width: nodeWidth * 50,
               height: 3000,
-              child: fullRendering()
+              child: fullRendering(),
             ),
           ),
         ),
@@ -47,20 +48,24 @@ class TreeViewPage extends StatelessWidget {
   }
 
   //全てのnodeWidgetをStackで返す
-  Stack fullRendering(){
-    return Stack(
-      children: getAllNodeWidgets(),
-    );
+  Stack fullRendering() {
+    return Stack(children: getAllNodeWidgets());
   }
 
-  List<NodeWidget> getAllNodeWidgets(){
+  List<NodeWidget> getAllNodeWidgets() {
     final List<RenderNode> nodes = [];
     searchTree(
       startNode: rootNode,
-      getChildren: (RenderNode node)=> node.children,
-      action:(RenderNode node)=>nodes.add(node));
-    nodes.map((node)=>log("${node.node.name}:(${node.position.dx},${node.position.dy})"));
-    return nodes.map((node)=>NodeWidget(node: node, width: 10, height: 10)).toList();
+      getChildren: (RenderNode node) => node.children,
+      action: (RenderNode node) => nodes.add(node),
+    );
+    for (var node in nodes) {
+      log("${node.node.name}:(${node.position.dx},${node.position.dy})");
+    }
+    ;
+    return nodes
+        .map((node) => NodeWidget(node: node, width: 1, height: 1))
+        .toList();
   }
 }
 
@@ -93,11 +98,12 @@ class NodeWidget extends StatelessWidget {
 class _NodePainter extends CustomPainter {
   final RenderNode node;
   final List<RenderNode> children;
-
+  final double nodeRadius = 100;
   //painter
   _NodePainter(this.node) : children = [] {
     log('NodePainterコンストラクタが呼び出されました。'); // NodePainterコンストラクタの開始ログ
   }
+
   @override
   void paint(Canvas canvas, Size size) {
     log('NodePainterのpaintメソッドが呼び出されました。'); // NodePainter paintメソッドの開始ログ
@@ -107,14 +113,30 @@ class _NodePainter extends CustomPainter {
       ..strokeWidth = 4.0;
 
     //自身を描画
-    canvas.drawCircle(Offset(size.width / 2, size.height / 2), 100, paint);
+    log("Nodeを描画(${node.position.dx},${node.position.dy})");
+    canvas.drawCircle(node.position, nodeRadius, paint);
+
+    //線の色を変更し、子ノードへの線を描画
+    paint.color = Colors.black;
+    drawChildLines(canvas, node, paint);
   }
 
   //子ノードまでの線を描画するメソッド
   void drawChildLines(Canvas canvas, RenderNode node, Paint paint) {
-    log('NodePainterの子ノードまでの線を描画しています。'); // 子ノードまでの線の描画ログ
+    log("子ノードまでの線を描画しています。");
+
+    //線の始点をノードの下部に設定。
+  
+    final Offset position = node.position;
+    final Offset lineStart = Offset(position.dx, position.dy + nodeRadius);
     for (final child in node.children) {
-      canvas.drawLine(node.position, child.position, paint);
+
+      //線の終点をノード上部に
+      final Offset childPos = child.position;
+      final Offset lineEnd = Offset(childPos.dx, childPos.dy - nodeRadius);
+
+      //線を描画
+      canvas.drawLine(lineStart, lineEnd, paint);
     }
   }
 
