@@ -76,13 +76,8 @@ class Node {
 
   String get name => _name;
   List<Node> get children => _children;
-  Node get parent => _parent ?? (throw NoParentException());
+  Node? get parent => _parent;
   int get maxDepth => _maxDepth;
   @override
   String toString() => _name;
-}
-
-class NoParentException implements Exception {
-  @override
-  String toString() => 'No parent found for this node';
 }
