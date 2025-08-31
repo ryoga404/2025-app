@@ -11,8 +11,11 @@ class TreeView extends HookConsumerWidget {
 
   final Node rootNode;
 
-  TreeView({super.key,required this.rootNode});
-  TreeView.mockingNode({super.key}):rootNode = mockedNode(3,3);
+  const TreeView({super.key,required this.rootNode});
+
+  factory TreeView.mockingNode({Key? key}){
+    return TreeView(key : key,rootNode:mockedNode(3,3));
+  }
   @override
   Widget build(BuildContext context, WidgetRef ref) {; // 深さ2、子ノード数3のモックノードを生成
     log('Root node children count: ${rootNode.children.length}'); // ログを追加
