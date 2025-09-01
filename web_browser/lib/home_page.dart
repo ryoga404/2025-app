@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:web_browser/node/mocked_node.dart';
 import 'package:web_browser/router/router.dart';
 import 'package:web_browser/tree_view/treeview.dart';
 
@@ -14,7 +15,7 @@ class MyHomePage extends StatelessWidget {
       body: Column(
         children: [
           ElevatedButton(onPressed: ()=>BrowserViewRoute().go(context), child: Text("to browser!")),
-          ElevatedButton(onPressed: ()=>TreeView.mockingNode(), child: Text("to treeview!"))
+          ElevatedButton(onPressed: ()=>TreeViewRoute($extra: mockedNode(3, 3)).go(context), child: Text("to treeview!"))
         ],
       ),
     );
