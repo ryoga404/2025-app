@@ -10,14 +10,17 @@ part 'router.g.dart';
 
 final router = GoRouter(initialLocation: '/', routes: $appRoutes);
 
+//コード自動生成のためのアノテーション。パスとルート（道順）クラスを結びつける。
 @TypedGoRoute<HomeRoute>(
   path: "/",
   routes: [
     TypedGoRoute<TreeViewRoute>(path: "/tree"),
-    TypedGoRoute<BrowserViewRoute>(path: "/browser",routes: [TypedGoRoute<TreeViewRoute>(path: "/tree")]),
-  ]
+    TypedGoRoute<BrowserViewRoute>(
+      path: "/browser",
+      routes: [TypedGoRoute<TreeViewRoute>(path: "/tree")],
+    ),
+  ],
 )
-
 class HomeRoute extends GoRouteData with $HomeRoute {
   const HomeRoute();
 
