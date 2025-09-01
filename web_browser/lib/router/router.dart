@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:go_router/go_router.dart';
 import 'package:web_browser/home_page.dart';
 import 'package:web_browser/tree_view/treeview.dart';
+import 'package:web_browser/browser/browser_view.dart';
 
 import '../node/node.dart';
 
@@ -42,5 +42,5 @@ class BrowserViewRoute extends GoRouteData with $BrowserViewRoute {
   const BrowserViewRoute();
 
   @override
-  Widget build(BuildContext context, GoRouterState state) => InAppWebView();
+  Widget build(BuildContext context, GoRouterState state) => const InAppWebviewSample();
 }
