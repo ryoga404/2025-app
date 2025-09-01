@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:web_browser/browser/browser_view.dart';
 import 'package:web_browser/node/mocked_node.dart';
 import 'package:web_browser/router/router.dart';
 import 'package:web_browser/tree_view/treeview.dart';
@@ -14,7 +15,15 @@ class MyHomePage extends StatelessWidget {
       appBar: AppBar(title: Text(title)),
       body: Column(
         children: [
-          ElevatedButton(onPressed: ()=>BrowserViewRoute().go(context), child: Text("to browser!")),
+          ElevatedButton(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const InAppWebviewSample()),
+              );
+            },
+            child: Text("to browser!"),
+          ),
           ElevatedButton(onPressed: ()=>TreeViewRoute($extra: mockedNode(3, 3)).go(context), child: Text("to treeview!"))
         ],
       ),
