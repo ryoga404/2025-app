@@ -10,7 +10,6 @@ import 'package:web_browser/tree_view/tree_graph.dart';
 class TreeView extends HookConsumerWidget {
 
   final Node rootNode;
-
   const TreeView({super.key,required this.rootNode});
 
   factory TreeView.mockingNode({Key? key}){
