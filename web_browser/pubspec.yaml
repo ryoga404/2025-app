@@ -40,6 +40,9 @@ dependencies:
   hooks_riverpod: ^2.6.1
   flutter_hooks: any
   flutter_inappwebview:
+  go_router: ^16.2.1
+  go_router_builder: ^4.0.0
+  build_runner: ^2.7.0
 
 dev_dependencies:
   flutter_test:
