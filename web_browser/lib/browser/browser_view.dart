@@ -39,8 +39,8 @@ class _InAppWebviewSampleState extends State<InAppWebviewSample> {
       body: SafeArea(
         child: Column(
           children: [
-            // 親ノード（前のページ）へ戻るボタン（履歴ツリーの親が存在し、ルートでない場合のみ表示）
-            if (controller.parentNode != null && controller.currentNode != controller.rootNode)
+            // 親ノードへ戻るボタン表示条件をgetRootNodeで統一
+            if (controller.parentNode != null && controller.currentNode != controller.getRootNode)
               controller.buildParentButton(context),
             // WebView本体（ページ表示）
             Expanded(

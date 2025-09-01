@@ -32,7 +32,7 @@ class BrowserBottomBar extends StatelessWidget {
   // ボタン押下で該当ノードのURLへWebViewを遷移
   Widget _buildBottomButton(Node node) {
     return GestureDetector(
-      onTap: () => controller.navigateTo(node.name), // ボタン押下時の遷移処理
+      onTap: () => controller.navigateTo(node.name), // 画面遷移
       child: Container(
         width: 160, // ボタンの幅
         height: 40, // ボタンの高さ
