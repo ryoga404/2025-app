@@ -17,8 +17,9 @@ class TreeView extends HookConsumerWidget {
   }
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {; // 深さ2、子ノード数3のモックノードを生成
+  Widget build(BuildContext context, WidgetRef ref) {; 
     log('Root node children count: ${rootNode.children.length}'); // ログを追加
+    
     // ノードをNodeWidgetのリストに変換
     final List<Widget> nodeWidgets = rootNode.children
         .map((node) => NodeWidget(node: node))
