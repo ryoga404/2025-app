@@ -49,7 +49,7 @@ class _InAppWebviewSampleState extends State<InAppWebviewSample> {
                 initialSettings: controller.settings, // WebView設定
                 onWebViewCreated: controller.onWebViewCreated, // WebView生成時コールバック
                 onLoadStop: controller.onLoadStop, // ページ読み込み完了時コールバック
-                shouldOverrideUrlLoading: controller.shouldOverrideUrlLoading, // リンククリック時コールバック
+                shouldOverrideUrlLoading: controller.shouldOverrideUrlLoadingRoot, // リンククリック時コールバック
               ),
             ),
             // 下部履歴ボタンバー（履歴ノードが存在する場合のみ表示）

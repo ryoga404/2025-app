@@ -2,6 +2,7 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import '../node/node.dart';
+import '../node/node_url.dart';
 import '../tree_view/treeview.dart';
 
 // ブラウザ画面の状態管理・ロジックを担当するコントローラークラス
@@ -31,11 +32,22 @@ class BrowserController {
   // 下部ボタンとして表示するノードのリスト（Google以外のページ履歴）
   final List<Node> bottomNodes = [];
 
+  // 検索ワード（初期は空、ユーザが検索したらセット）
+  String searchWord = "";
+
   // コンストラクタ。履歴ツリーの初期化とGoogleタイトルの登録。
   BrowserController() {
     rootNode = Node("__ROOT__"); // ルートノード生成
     _currentNode = rootNode;     // 現在ノードをルートに設定
     urlTitles[initialUrl] = "Google"; // Googleのタイトルを登録
+  }
+
+  // ルートノードの初期化（検索ワードとURLで初期化）
+  void setRootNode(String word, String url) {
+    searchWord = word;
+    rootNode = NodeWithURL(word, url); // NodeWithURLを使う
+    _currentNode = rootNode;
+    urlTitles[url] = word;
   }
 
   // 現在ノードの親ノードを取得（履歴ツリーで一つ前のページ）
@@ -103,6 +115,39 @@ class BrowserController {
       addBottomNode(newNode);
     }
   }
+
+  // --- ここからリンク選択時の処理 ---
+  // リンククリック時に呼ばれるコールバック
+  // 1. ルートノードの子ノードとして追加
+  // 2. URLはリンク先
+  // 3. Nameは<title>タグ10文字（超える場合は...）
+  Future<NavigationActionPolicy> shouldOverrideUrlLoadingRoot(
+      InAppWebViewController controller, NavigationAction navigationAction) async {
+    final urlStr = navigationAction.request.url.toString();
+
+    // タイトル取得
+    String? title = await controller.getTitle();
+    String nodeName = "";
+    if (title != null && title.isNotEmpty) {shouldOverrideUrlLoading
+      nodeName = title.length > 10 ? "${title.substring(0, 10)}..." : title;
+    } else {
+      nodeName = urlStr;
+    }
+
+    // ルートノードの子ノードとして追加（NodeWithURLを使う）
+    final childNode = NodeWithURL(nodeName, urlStr);
+    rootNode.addChild(childNode);
+
+    // 下部ボタンに追加
+    addBottomNode(childNode);
+
+    // 現在ノードはルートノードのまま（遷移はしない）
+    // ページ遷移は許可しない
+    return NavigationActionPolicy.CANCEL;
+  }
+
+  // 親ノード画面の際、子ノードを下部ボタンとして表示 ---
+  // buildBottomButtonなどは既存のままでOK
 
   // リンククリック時に呼ばれるコールバック
   // 1. 履歴ツリーにノード追加（canAddChildNodeがtrueの場合）
@@ -207,3 +252,4 @@ class BrowserController {
     );
   }
 }
+
