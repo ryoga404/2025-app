@@ -32,6 +32,7 @@ class BrowserController {
   // 下部ボタンとして表示するノードのリスト（Google以外のページ履歴）
   final List<Node> bottomNodes = [];
 
+
   // 検索ワード（初期は空、ユーザが検索したらセット）
   String searchWord = "";
 
@@ -42,6 +43,7 @@ class BrowserController {
     urlTitles[initialUrl] = "Google"; // Googleのタイトルを登録
   }
 
+
   // ルートノードの初期化（検索ワードとURLで初期化）
   void setRootNode(String word, String url) {
     searchWord = word;
@@ -49,7 +51,6 @@ class BrowserController {
     _currentNode = rootNode;
     urlTitles[url] = word;
   }
-
   // 現在ノードの親ノードを取得（履歴ツリーで一つ前のページ）
   Node? get parentNode => _currentNode.parent;
   // 現在ノード（WebViewで表示中のページ）を取得
@@ -116,6 +117,7 @@ class BrowserController {
     }
   }
 
+
   // --- ここからリンク選択時の処理 ---
   // リンククリック時に呼ばれるコールバック
   // 1. ルートノードの子ノードとして追加
@@ -148,7 +150,7 @@ class BrowserController {
 
   // 親ノード画面の際、子ノードを下部ボタンとして表示 ---
   // buildBottomButtonなどは既存のままでOK
-
+  
   // リンククリック時に呼ばれるコールバック
   // 1. 履歴ツリーにノード追加（canAddChildNodeがtrueの場合）
   // 2. Google以外なら下部ボタンリストに追加
