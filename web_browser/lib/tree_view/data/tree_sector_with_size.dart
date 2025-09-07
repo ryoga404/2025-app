@@ -1,9 +1,14 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
-import 'package:web_browser/tree_view/tree_sector/tree_sector.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:web_browser/tree_view/tree_sector/tree_division.dart';
 
-class TreeSectorWithSize{
-  final TreeSector treeSector;
-  final Size size;
+part 'tree_sector_with_size.freezed.dart';
 
-  TreeSectorWithSize(this.treeSector,this.size);
+@freezed
+abstract class TreeDivisionWithSize with _$TreeSectorWithSize {
+  const factory TreeDivisionWithSize({
+    required TreeDivision treeSector,
+    required Size size,
+  }) = _TreeSectorWithSize;
 }

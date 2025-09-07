@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../data/ui_widgets.dart';
-import 'tree_sector.dart';
+import 'tree_division.dart';
 
 /// ノードを表すウィジェット
 class NodeWidget extends ConsumerWidget {
   final String name;
-  final TreeSector parentTreeSector;
+  final TreeDivision parentTreeSector;
   const NodeWidget({
     super.key,
     required this.name,

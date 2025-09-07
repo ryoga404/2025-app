@@ -1,3 +1,4 @@
+import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -12,54 +13,60 @@ import 'node_widget.dart';
 ///====TreeSectorの子要素を管理するNotifier====
 ///子要素を利用する際に参照。
 final treeChildrenNotifier =
-    NotifierProvider.family<TreeChildrenNotifier, List<TreeSector>, TreeSector>(
-      () => TreeChildrenNotifier(),
-    );
+    NotifierProvider.family<
+      TreeChildrenNotifier,
+      List<TreeDivision>,
+      TreeDivision
+    >(() => TreeChildrenNotifier());
 
-class TreeChildrenNotifier extends FamilyNotifier<List<TreeSector>, TreeSector> {
+class TreeChildrenNotifier
+    extends FamilyNotifier<List<TreeDivision>, TreeDivision> {
   @override
-  List<TreeSector> build(treeSector) {
+  List<TreeDivision> build(treeSector) {
     this.treeSector = treeSector;
     return [];
   }
 
-  void generateChildren(){
-    state = treeSector.node.children.map((child)=>TreeSector(key: UniqueKey(), node: child)).toList();
+  void generateChildren() {
+    log(
+      "State changed:TreeChildrenNotifer.[node.name = ${treeSector.node.name}]",
+    );
+    state = treeSector.node.children
+        .map((child) => TreeDivision(key: UniqueKey(), node: child))
+        .toList();
   }
 
-  void removeChildren(){
-    state =[];
+  void removeChildren() {
+    state = [];
   }
 
-  late final TreeSector treeSector;
+  late final TreeDivision treeSector;
 }
 
 //============================================
 
-
-
-
 ///====TreeSector自身のsizeを公開するNotifier>====
-final treeSectorSizeNotifer = NotifierProvider.family<TreeSectorSizeNotifer,Size,TreeSector>(() => TreeSectorSizeNotifer());
+final treeDivisionSizeNotifier =
+    NotifierProvider.family<TreeDivisonSizeNotifier, Size, TreeDivision>(
+      () => TreeDivisonSizeNotifier(),
+    );
 
-class TreeSectorSizeNotifer extends FamilyNotifier<Size,TreeSector> {
+class TreeDivisonSizeNotifier extends FamilyNotifier<Size, TreeDivision> {
   @override
-  Size build(TreeSector treeSector) {
+  Size build(TreeDivision treeSector) {
     return Size(0, 0);
   }
 
-  void update(Size size){
+  void update(Size size) {
+    if (state == size) return;
     state = size;
   }
-  
 }
 
 //==============================================
 
 /// ツリー構造のセクターを表すウィジェット
-/// 
-/// 
-class TreeSector extends HookConsumerWidget {
+class TreeDivision extends HookConsumerWidget {
   //自身に対応しているノード
   final Node node;
   //自身が描画しているNodeWidget
@@ -68,20 +75,26 @@ class TreeSector extends HookConsumerWidget {
     name: node.name,
     parentTreeSector: this,
   );
+  bool isExpanded = false;
 
   ///`node`:入力されたNodeの`name`プロパティを表示する。
-  TreeSector({required super.key, required this.node});
+  TreeDivision({required super.key, required this.node});
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final lineWidget = useState(LineSector(lines: []));
     final double verticalInterval = ref.watch(verticalIntervalNotifier);
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final renderBox = context.findRenderObject() as RenderBox;
       Size mySize = renderBox.size;
-      ref.read(treeSectorSizeNotifer(this).notifier).update(mySize);
+      log("Render Complete!. ${node.name}");
+      ref.read(treeDivisionSizeNotifier(this).notifier).update(mySize);
     });
 
+    final childrenTreeSector = ref.watch(childrenTreeSectorNotifier(this));
+    final lineSector = SizedBox(
+      height: verticalInterval,
+      child: ref.watch(lineSectorNotifier(this)),
+    );
 
     //１セクタは３階層で表示。
     return Column(
@@ -92,9 +105,9 @@ class TreeSector extends HookConsumerWidget {
         //自身のノード
         nodeWidget,
         //子ノードへの線
-        SizedBox(height: verticalInterval, child: lineWidget.value),
+        lineSector,
         //子セクターたち
-        ChildrenTreeSector(parent: this),
+        childrenTreeSector,
       ],
     );
   }
@@ -109,5 +122,4 @@ class TreeSector extends HookConsumerWidget {
   }
 
   ///子ノードへ続く線の終点を計算するメソッド
-  
 }
