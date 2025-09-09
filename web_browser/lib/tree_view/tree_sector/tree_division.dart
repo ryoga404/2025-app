@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:web_browser/tree_view/tree_sector/child/children_tree_sector.dart';
 
@@ -74,6 +75,8 @@ class TreeDivision extends HookConsumerWidget {
     name: node.name,
     parentTreeSector: this,
   );
+  bool isExpanded = false;
+
   ///`node`:入力されたNodeの`name`プロパティを表示する。
   TreeDivision({required super.key, required this.node});
   @override
