@@ -29,7 +29,7 @@ class TreeView extends HookConsumerWidget {
         boundaryMargin: EdgeInsets.all(100),
         maxScale: 1000,
         minScale: 0.001,
-        child: TreeDivision(key: UniqueKey(), node: mockedNode(10, 3)),
+        child: TreeDivision(key: UniqueKey(), node: rootNode),
       ),
     );
   }
