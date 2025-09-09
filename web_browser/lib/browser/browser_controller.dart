@@ -1,6 +1,7 @@
 import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
+import 'package:web_browser/router/router.dart';
 import '../node/node.dart';
 import '../node/node_url.dart';
 import '../tree_view/treeview.dart';
@@ -32,17 +33,15 @@ class BrowserController {
   // 下部ボタンとして表示するノードのリスト（Google以外のページ履歴）
   final List<Node> bottomNodes = [];
 
-
   // 検索ワード（初期は空、ユーザが検索したらセット）
   String searchWord = "";
 
   // コンストラクタ。履歴ツリーの初期化とGoogleタイトルの登録。
   BrowserController() {
     rootNode = Node("__ROOT__"); // ルートノード生成
-    _currentNode = rootNode;     // 現在ノードをルートに設定
+    _currentNode = rootNode; // 現在ノードをルートに設定
     urlTitles[initialUrl] = "Google"; // Googleのタイトルを登録
   }
-
 
   // ルートノードの初期化（検索ワードとURLで初期化）
   void setRootNode(String word, String url) {
@@ -51,6 +50,7 @@ class BrowserController {
     _currentNode = rootNode;
     urlTitles[url] = word;
   }
+
   // 現在ノードの親ノードを取得（履歴ツリーで一つ前のページ）
   Node? get parentNode => _currentNode.parent;
   // 現在ノード（WebViewで表示中のページ）を取得
@@ -108,7 +108,7 @@ class BrowserController {
     final newNode = Node(urlStr, _currentNode);
     if (canAddChildNode) {
       _currentNode.addChild(newNode); // 現在ノードの子として追加
-      _currentNode = newNode;         // 現在ノードを新ノードに更新
+      _currentNode = newNode; // 現在ノードを新ノードに更新
     }
 
     // Google以外のページなら下部ボタンリストに追加
@@ -117,20 +117,21 @@ class BrowserController {
     }
   }
 
-
   // --- ここからリンク選択時の処理 ---
   // リンククリック時に呼ばれるコールバック
   // 1. ルートノードの子ノードとして追加
   // 2. URLはリンク先
   // 3. Nameは<title>タグ10文字（超える場合は...）
   Future<NavigationActionPolicy> shouldOverrideUrlLoadingRoot(
-      InAppWebViewController controller, NavigationAction navigationAction) async {
+    InAppWebViewController controller,
+    NavigationAction navigationAction,
+  ) async {
     final urlStr = navigationAction.request.url.toString();
 
     // タイトル取得
     String? title = await controller.getTitle();
     String nodeName = "";
-    if (title != null && title.isNotEmpty) {shouldOverrideUrlLoading
+    if (title != null && title.isNotEmpty) {
       nodeName = title.length > 10 ? "${title.substring(0, 10)}..." : title;
     } else {
       nodeName = urlStr;
@@ -150,22 +151,24 @@ class BrowserController {
 
   // 親ノード画面の際、子ノードを下部ボタンとして表示 ---
   // buildBottomButtonなどは既存のままでOK
-  
+
   // リンククリック時に呼ばれるコールバック
   // 1. 履歴ツリーにノード追加（canAddChildNodeがtrueの場合）
   // 2. Google以外なら下部ボタンリストに追加
   // 3. ページ遷移を許可
   Future<NavigationActionPolicy> shouldOverrideUrlLoading(
-      InAppWebViewController controller, NavigationAction navigationAction) async {
+    InAppWebViewController controller,
+    NavigationAction navigationAction,
+  ) async {
     final urlStr = navigationAction.request.url.toString();
     log('リンククリック: $urlStr'); // デバッグログ
     final newNode = Node(urlStr, currentNode);
     if (canAddChildNode) {
       currentNode.addChild(newNode); // 履歴ツリーに追加
-      _currentNode = newNode;        // 現在ノード更新
+      _currentNode = newNode; // 現在ノード更新
     }
     if (!isGoogleUrl(urlStr)) {
-      addBottomNode(newNode);        // 下部ボタンリストに追加
+      addBottomNode(newNode); // 下部ボタンリストに追加
     }
     return NavigationActionPolicy.ALLOW; // ページ遷移を許可
   }
@@ -201,7 +204,10 @@ class BrowserController {
   // 画面右下の各種操作ボタン（戻る・ノード追加切替）のWidget生成
   // 戻るボタン：WebViewの履歴を戻る
   // ノード追加切替：履歴ツリーへの追加ON/OFF
-  Widget buildFloatingButtons(BuildContext context, void Function(void Function()) setState) {
+  Widget buildFloatingButtons(
+    BuildContext context,
+    void Function(void Function()) setState,
+  ) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
@@ -215,6 +221,13 @@ class BrowserController {
             if (await webViewController.canGoBack()) {
               await webViewController.goBack();
             }
+          },
+        ),
+        FloatingActionButton(
+          heroTag: "goGraphButton",
+          child: const Icon(Icons.arrow_back),
+          onPressed: () {
+            TreeViewRoute($extra: _currentNode).go(context);
           },
         ),
         const SizedBox(height: 16),
@@ -234,7 +247,9 @@ class BrowserController {
                 });
               },
               child: Icon(
-                canAddChildNode ? Icons.check_box : Icons.check_box_outline_blank,
+                canAddChildNode
+                    ? Icons.check_box
+                    : Icons.check_box_outline_blank,
               ),
             ),
             const SizedBox(width: 12),
@@ -254,4 +269,3 @@ class BrowserController {
     );
   }
 }
-
