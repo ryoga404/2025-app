@@ -18,7 +18,7 @@ class MyHomePage extends StatelessWidget {
             child: Text("to browser!"),
           ),
           ElevatedButton(
-            onPressed: () => TreeViewRoute($extra: mockedNode(3, 3)).go(context),
+            onPressed: () => TreeViewRoute($extra: mockedNode(10, 3)).go(context),
             child: Text("to treeview!")
           ),
         ],

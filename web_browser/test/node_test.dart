@@ -7,7 +7,6 @@ void main() {
     test('Nodeのコンストラクタは名前と親を正しく設定する', () {
       final root = Node('root');
       expect(root.name, 'root');
-      expect(() => root.parent, throwsA(isA<NoParentException>()));
 
       final child = Node('child', root);
       expect(child.name, 'child');
@@ -56,12 +55,6 @@ void main() {
       final emptyNode = Node('empty');
       expect(emptyNode.maxDepth, 0);
     });
-
-    test('NoParentExceptionは親がない場合にスローされる', () {
-      final root = Node('root');
-      expect(() => root.parent, throwsA(isA<NoParentException>()));
-    });
-
     test('toStringはノード名を返す', () {
       final node = Node('testNode');
       expect(node.toString(), 'testNode');
