@@ -223,13 +223,6 @@ class BrowserController {
             }
           },
         ),
-        FloatingActionButton(
-          heroTag: "goGraphButton",
-          child: const Icon(Icons.arrow_back),
-          onPressed: () {
-            TreeViewRoute($extra: _currentNode).go(context);
-          },
-        ),
         const SizedBox(height: 16),
         // --- ノード追加切替スイッチ ---
         // Rowで2つの操作（切替ボタンとスイッチ）を横並びに表示
