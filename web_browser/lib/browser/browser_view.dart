@@ -4,15 +4,15 @@ import 'browser_controller.dart';
 import 'browser_bottom_bar.dart';
 
 // Webブラウザ画面のメインWidget
-class InAppWebviewSample extends StatefulWidget {
-  const InAppWebviewSample({super.key});
+class BrowserViewWidget extends StatefulWidget {
+  const BrowserViewWidget({super.key});
 
   @override
-  State<InAppWebviewSample> createState() => _InAppWebviewSampleState();
+  State<BrowserViewWidget> createState() => _BrowserViewWidgetState();
 }
 
 // Webブラウザ画面の状態管理用Stateクラス
-class _InAppWebviewSampleState extends State<InAppWebviewSample> {
+class _BrowserViewWidgetState extends State<BrowserViewWidget> {
   // ブラウザのロジック・状態管理用コントローラー
   late BrowserController controller;
 
