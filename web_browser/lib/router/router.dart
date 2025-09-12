@@ -42,5 +42,5 @@ class BrowserViewRoute extends GoRouteData with $BrowserViewRoute {
   const BrowserViewRoute();
 
   @override
-  Widget build(BuildContext context, GoRouterState state) => const BrowserViewWidget();
+  Widget build(BuildContext context, GoRouterState state) => BrowserViewWidget();
 }
